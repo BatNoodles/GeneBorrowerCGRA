@@ -15,7 +15,7 @@ void setup(){
   noSmooth();
   
 
-  
+  enemyMap = new HashMap<String, Enemy>();
   
   cardSet = new HashMap<String, Card>(); 
   //set of all the cards in the game, so they can be accessed at runtime
@@ -49,8 +49,13 @@ void setup(){
   
   
   
-  kobold = new Enemy("enemyData/kobold.txt", "enemySprites/kobold.png", globalTextureMultiplier, dropShadow);
+  enemyMap.put("Kobold",new Enemy("enemyData/kobold.txt", "enemySprites/kobold.png", globalTextureMultiplier, dropShadow));
   
+  
+  enemies = new ArrayList<Enemy>();
+  
+  enemies.add(enemyMap.get("Kobold").clone());
+  enemies.add(enemyMap.get("Kobold").clone());
   
 }
 
@@ -63,9 +68,8 @@ final int handLeft = 200; //setting up the hand
 final int handTop = 700;
 final int handPadding = 25;
 
+public ArrayList<Enemy> enemies;
 
-
-Enemy kobold;
 
 PImage backgroundImage;
 PImage backgroundAdditionalImage;
@@ -97,6 +101,11 @@ int selectXOffset, selectYOffset;
 
 Player player;
 
+HashMap<String, Enemy> enemyMap;
+
+final int enemyPadding = 50;
+final int enemyLeft = 100;
+
 final String basicPunchName = "basicPunch";
 final String basicEvadeName = "basicEvade";
 
@@ -117,7 +126,12 @@ void draw(){
   image(backgroundImage,0,0,backgroundWidth,backgroundHeight);
   image(backgroundAdditionalImage,0,0,backgroundWidth,backgroundHeight);
   player.draw(100,200);
-  kobold.draw(1600,200);
+  
+  for (int i = enemies.size()-1; i >= 0; i--){
+   Enemy enemy = enemies.get(i);
+   enemy.draw(width - enemyLeft - (enemyPadding + enemy.getWidth())*(enemies.size() - i), 200);
+  }
+  
   drawHand();
   handleMouse();
   

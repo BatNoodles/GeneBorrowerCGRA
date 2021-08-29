@@ -63,7 +63,13 @@ class Enemy {
     
   }
   
+  public int getWidth(){
+   return this.image.width * this.textureMult; 
+  }
   
+  public Enemy clone(){
+   return new Enemy(this.filename, this.imageFilename, this.textureMult, this.shadow); 
+  }
   
   public void draw(int x, int y){
     image(this.shadow, x + (this.image.width * this.textureMult - this.shadow.width * this.textureMult) / 2, y + this.image.height * this.textureMult - 0.5 * this.textureMult * this.shadow.height, this.shadow.width * this.textureMult,this.shadow.height * this.textureMult);
