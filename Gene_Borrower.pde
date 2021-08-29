@@ -49,7 +49,8 @@ void setup(){
   
   
   //TODO read all enemies from the enemy folder
-  enemyMap.put("Kobold",new Enemy("enemyData/kobold.txt", "enemySprites/kobold.png", globalTextureMultiplier, dropShadow, blockImage));
+  
+  enemyMap.put("Kobold",new Enemy(loadStrings("enemyData/kobold.txt"), "enemySprites/kobold.png", globalTextureMultiplier, dropShadow, blockImage));
   
   
   
@@ -171,18 +172,28 @@ void draw(){
   
 }
 
-void handleActions(boolean playerPlayed, Enemy target, ArrayList<Action> actions){
+void handleActions(Entity source, Entity target, ArrayList<Action> actions){
   //not even close to working, only handles player actions, and barely.
   
   for (Action action : actions){
-   if (action.getType().equals("a")){
-     if (action.getTarget()){
-      target.damage(action.getAmount()); 
-     }
-   }
-   else if (action.getType().equals("b")){
-     player.addBlock(action.getAmount());
-   }
+      switch (action.getType()){
+       case "a":
+         if (action.getTarget()){
+           target.damage(action.getAmount());
+         }
+         else{
+          source.damage(action.getAmount()); 
+         }
+         break;
+       case "b":
+         if (action.getTarget()){
+          target.addBlock(action.getAmount()); 
+         }
+         else{
+          source.addBlock(action.getAmount()); 
+         }
+       
+      }
   }
 }
 
@@ -194,7 +205,7 @@ void playCard(){
   }
   else{
   hand.remove(selectedCard);
-  handleActions(true, null, selectedCard.getActions());
+  handleActions(player, null, selectedCard.getActions());
   selectedCard = null;
  }
 }
@@ -255,7 +266,7 @@ void handleMouseTarget(){
    y = 200;
     if (mouseX > x && mouseX < x + enemy.getWidth() && mouseY > y && mouseY < y + enemy.getHeight()){
       hand.remove(selectedCard);
-      handleActions(true, enemy, selectedCard.getActions());
+      handleActions(player, enemy, selectedCard.getActions());
       selectedCard = null;
       mouseMode = "card";
       return;
