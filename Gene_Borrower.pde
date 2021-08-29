@@ -1,13 +1,13 @@
 void setup(){
-  
+  frameRate(155);
   hand = new ArrayList<Card>();
-  
+  dropShadow = loadImage(dropShadowTexture);
   
  backgroundImage = loadImage(backgroundName);
  backgroundAdditionalImage = loadImage(backgroundDetail);  
  
-  backgroundWidth = backgroundImage.width * 8;
-  backgroundHeight = backgroundImage.height * 8;
+  backgroundWidth = backgroundImage.width * globalTextureMultiplier;
+  backgroundHeight = backgroundImage.height * globalTextureMultiplier;
   
   
   size(1920, 1080, P2D); //making the pixel art not look terrible
@@ -34,15 +34,14 @@ void setup(){
   
   
   undergroundTile = loadImage(repeatingUndergroundName);
-  repeatingWidth = undergroundTile.width * 8;
-  repeatingHeight = undergroundTile.height * 8;
+  repeatingWidth = undergroundTile.width * globalTextureMultiplier;
+  repeatingHeight = undergroundTile.height * globalTextureMultiplier;
   PImage playerSprite = loadImage(playerSpriteName);
-  playerWidth = playerSprite.width * 8;
-  playerHeight = playerSprite.height * 8;
+  playerWidth = playerSprite.width * globalTextureMultiplier;
+  playerHeight = playerSprite.height * globalTextureMultiplier;
   playerSprite = null;
-  player = new Player(100, 3, playerSpriteName, playerWidth, playerHeight); //creates the player
+  player = new Player(100, 3, playerSpriteName, globalTextureMultiplier, dropShadow); //creates the player
   player.constructBasicDeck(cardSet.get(basicPunchName), cardSet.get(basicEvadeName));  
-  
   setupDeck();
   shuffleDeck();
   drawToLimit();
@@ -50,7 +49,7 @@ void setup(){
   
   
   
-  kobold = new Enemy("enemyData/kobold.txt", "enemySprites/kobold.png", 8);
+  kobold = new Enemy("enemyData/kobold.txt", "enemySprites/kobold.png", globalTextureMultiplier, dropShadow);
   
   
 }
@@ -65,6 +64,7 @@ final int handTop = 700;
 final int handPadding = 25;
 
 
+
 Enemy kobold;
 
 PImage backgroundImage;
@@ -74,7 +74,7 @@ int backgroundHeight;
 final String backgroundName = "sprites/backgroundSunset.png";
 final String backgroundDetail = "sprites/backgroundSunsetTrees.png";
 final String repeatingUndergroundName = "sprites/smallDirt.png";
-
+final String dropShadowTexture = "sprites/dropShadow.png";
 
 int playerWidth;
 int playerHeight;
@@ -82,6 +82,8 @@ int playerHeight;
 final String playerSpriteName = "sprites/playerSprite.png";
 
 HashMap<String, Card> cardSet;
+
+final int globalTextureMultiplier = 6;
 
 
 final int cardHeight = 300; //size of each card
@@ -100,11 +102,13 @@ final String basicEvadeName = "basicEvade";
 
 
 PImage undergroundTile;
+PImage dropShadow;
 int repeatingWidth;
 int repeatingHeight;
 
 void draw(){
   background(255);
+  
   for (int y = backgroundHeight - repeatingHeight; y < height; y+= repeatingHeight){
     for (int x = 0; x < width; x+= repeatingWidth){
      image(undergroundTile, x, y, repeatingWidth, repeatingHeight);

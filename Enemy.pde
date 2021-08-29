@@ -28,9 +28,15 @@ class Enemy {
 
   private String name;
 
-  private int imageSizeMult;
+  private int textureMult;
 
-  public Enemy(String filename, String imageFilename, int imageSizeMult) {
+  private PImage shadow;
+  
+   
+ private int healthbarWidth;
+ private int healthbarHeight;
+
+  public Enemy(String filename, String imageFilename, int textureMult, PImage shadow) {
     this.filename = filename;
     this.imageFilename = imageFilename;
     this.image = loadImage(this.imageFilename);
@@ -40,15 +46,16 @@ class Enemy {
     this.maxHealth = Integer.parseInt(lines[1]);
     this.health = this.maxHealth;
     
-    this.imageSizeMult = imageSizeMult;
+    this.textureMult = textureMult;
     
     possibleActions = new ArrayList<EnemyActionGroup>();
     
     this.defense = 0;
     
-    
+    this.shadow = shadow;
     //loading action groups
-    
+    this.healthbarHeight = 20;
+     this.healthbarWidth = (int)(this.image.width * this.textureMult);
     for (int i = 2; i < lines.length; i += 2){
      this.possibleActions.add(new EnemyActionGroup(lines[i], lines[i+1])); 
     }
@@ -59,6 +66,13 @@ class Enemy {
   
   
   public void draw(int x, int y){
-    image(this.image, x, y, this.image.width * this.imageSizeMult, this.image.height * this.imageSizeMult);
+    image(this.shadow, x + (this.image.width * this.textureMult - this.shadow.width * this.textureMult) / 2, y + this.image.height * this.textureMult - 0.5 * this.textureMult * this.shadow.height, this.shadow.width * this.textureMult,this.shadow.height * this.textureMult);
+    image(this.image, x, y, this.image.width * this.textureMult, this.image.height * this.textureMult);
+    
+   fill(255,0,0);
+   rect(x - (this.image.width * textureMult - this.healthbarWidth)/2, y + this.image.height * this.textureMult + this.healthbarHeight * 1.5, this.healthbarWidth, this.healthbarHeight);
+   fill(0,255,0);
+   rect(x - (this.image.width * textureMult - this.healthbarWidth)/2, y + this.image.height * this.textureMult + this.healthbarHeight * 1.5, this.healthbarWidth * this.health / this.maxHealth, this.healthbarHeight);
+   
   }
 }
