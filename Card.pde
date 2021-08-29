@@ -76,8 +76,10 @@ class Card{
     
     
     for (int line = 2; line < lines.length; line += 3){
-      if (lines[line+1] == "1"){
+
+      if (Integer.parseInt(lines[line+1]) == 1){
        this.cardHasTargets = true; 
+       
       }
      actions.add(new Action(lines[line], 
      Integer.parseInt(lines[line+1]), 

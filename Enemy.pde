@@ -31,12 +31,12 @@ class Enemy {
   private int textureMult;
 
   private PImage shadow;
-  
+  private PImage blockImage;
    
  private int healthbarWidth;
  private int healthbarHeight;
 
-  public Enemy(String filename, String imageFilename, int textureMult, PImage shadow) {
+  public Enemy(String filename, String imageFilename, int textureMult, PImage shadow, PImage block) {
     this.filename = filename;
     this.imageFilename = imageFilename;
     this.image = loadImage(this.imageFilename);
@@ -53,6 +53,7 @@ class Enemy {
     this.defense = 0;
     
     this.shadow = shadow;
+    this.blockImage = block;
     //loading action groups
     this.healthbarHeight = 20;
      this.healthbarWidth = (int)(this.image.width * this.textureMult);
@@ -63,22 +64,40 @@ class Enemy {
     
   }
   
+  public boolean damage(int amount){
+   this.health -= amount;
+   return health <= 0;
+  }
+  
   public int getWidth(){
    return this.image.width * this.textureMult; 
   }
   
+  public int getHeight(){
+   return this.image.height * this.textureMult; 
+  }
+  
   public Enemy clone(){
-   return new Enemy(this.filename, this.imageFilename, this.textureMult, this.shadow); 
+   return new Enemy(this.filename, this.imageFilename, this.textureMult, this.shadow, this.blockImage); 
   }
   
   public void draw(int x, int y){
     image(this.shadow, x + (this.image.width * this.textureMult - this.shadow.width * this.textureMult) / 2, y + this.image.height * this.textureMult - 0.5 * this.textureMult * this.shadow.height, this.shadow.width * this.textureMult,this.shadow.height * this.textureMult);
     image(this.image, x, y, this.image.width * this.textureMult, this.image.height * this.textureMult);
-    
+    noStroke();  
    fill(255,0,0);
    rect(x - (this.image.width * textureMult - this.healthbarWidth)/2, y + this.image.height * this.textureMult + this.healthbarHeight * 1.5, this.healthbarWidth, this.healthbarHeight);
    fill(0,255,0);
    rect(x - (this.image.width * textureMult - this.healthbarWidth)/2, y + this.image.height * this.textureMult + this.healthbarHeight * 1.5, this.healthbarWidth * this.health / this.maxHealth, this.healthbarHeight);
+   
+   int blockX =x - (this.image.width * textureMult - this.healthbarWidth)/2 + this.healthbarWidth; 
+   float blockY = y + this.image.height * this.textureMult + this.healthbarHeight * 1.75 - this.blockImage.height * this.textureMult  / 2;
+   image(this.blockImage, blockX,  blockY, this.blockImage.width * this.textureMult, this.blockImage.height * this.textureMult);
+   
+   fill(0,0,0);
+   textAlign(CENTER);
+   text(Integer.toString(defense), blockX, blockY + blockImage.height * textureMult * 0.2, blockImage.width * textureMult, blockImage.height * textureMult);
+   
    
   }
 }

@@ -1,9 +1,13 @@
+//todo make an abstract class for entity that can be used for both player and enemy. This would allow the handleAction code to be a lot simpler.
+
+
 void setup(){
-  frameRate(155);
+  textFont(createFont("fonts/VT323-Regular.ttf", 30));
+  frameRate(155); //only used so it looks smooth on my monitor :)
   hand = new ArrayList<Card>();
-  dropShadow = loadImage(dropShadowTexture);
-  
- backgroundImage = loadImage(backgroundName);
+  dropShadow = loadImage(dropShadowTexture); //shadow texture used by all entities
+  blockImage = loadImage(blockTexture);
+ backgroundImage = loadImage(backgroundName); //loading backgrounds
  backgroundAdditionalImage = loadImage(backgroundDetail);  
  
   backgroundWidth = backgroundImage.width * globalTextureMultiplier;
@@ -15,11 +19,11 @@ void setup(){
   noSmooth();
   
 
-  enemyMap = new HashMap<String, Enemy>();
+  enemyMap = new HashMap<String, Enemy>(); //storing all the different kinds of enemies
   
   cardSet = new HashMap<String, Card>(); 
   //set of all the cards in the game, so they can be accessed at runtime
-  File dir = new File(sketchPath("/cardData"));
+  File dir = new File(sketchPath("/cardData")); //gets all the cards
   File[] files = dir.listFiles();
 
   
@@ -33,14 +37,10 @@ void setup(){
   }
   
   
-  undergroundTile = loadImage(repeatingUndergroundName);
+  undergroundTile = loadImage(repeatingUndergroundName); //repeating tile for undergroud, where the hand is drawn
   repeatingWidth = undergroundTile.width * globalTextureMultiplier;
   repeatingHeight = undergroundTile.height * globalTextureMultiplier;
-  PImage playerSprite = loadImage(playerSpriteName);
-  playerWidth = playerSprite.width * globalTextureMultiplier;
-  playerHeight = playerSprite.height * globalTextureMultiplier;
-  playerSprite = null;
-  player = new Player(100, 3, playerSpriteName, globalTextureMultiplier, dropShadow); //creates the player
+  player = new Player(100, 3, playerSpriteName, globalTextureMultiplier, dropShadow, blockImage); //creates the player
   player.constructBasicDeck(cardSet.get(basicPunchName), cardSet.get(basicEvadeName));  
   setupDeck();
   shuffleDeck();
@@ -48,8 +48,12 @@ void setup(){
   
   
   
+  //TODO read all enemies from the enemy folder
+  enemyMap.put("Kobold",new Enemy("enemyData/kobold.txt", "enemySprites/kobold.png", globalTextureMultiplier, dropShadow, blockImage));
   
-  enemyMap.put("Kobold",new Enemy("enemyData/kobold.txt", "enemySprites/kobold.png", globalTextureMultiplier, dropShadow));
+  
+  
+  //TODO but not for a long time: add sprite sheets and animations (easier said than done)
   
   
   enemies = new ArrayList<Enemy>();
@@ -57,6 +61,10 @@ void setup(){
   enemies.add(enemyMap.get("Kobold").clone());
   enemies.add(enemyMap.get("Kobold").clone());
   
+  
+  
+  
+  mouseMode = "card";
 }
 
 
@@ -79,7 +87,8 @@ final String backgroundName = "sprites/backgroundSunset.png";
 final String backgroundDetail = "sprites/backgroundSunsetTrees.png";
 final String repeatingUndergroundName = "sprites/smallDirt.png";
 final String dropShadowTexture = "sprites/dropShadow.png";
-
+final String blockTexture = "sprites/blockIcon.png";
+//background sprites and resused sprites
 int playerWidth;
 int playerHeight;
 
@@ -87,7 +96,7 @@ final String playerSpriteName = "sprites/playerSprite.png";
 
 HashMap<String, Card> cardSet;
 
-final int globalTextureMultiplier = 6;
+final int globalTextureMultiplier = 6; //what the size of the actual sprites should be multiplied by
 
 
 final int cardHeight = 300; //size of each card
@@ -103,22 +112,28 @@ Player player;
 
 HashMap<String, Enemy> enemyMap;
 
-final int enemyPadding = 50;
+final int enemyPadding = 65;
 final int enemyLeft = 100;
 
 final String basicPunchName = "basicPunch";
 final String basicEvadeName = "basicEvade";
 
 
+String mouseMode;
+
+Enemy targetedEnemy;
+
+
 PImage undergroundTile;
 PImage dropShadow;
+PImage blockImage;
 int repeatingWidth;
 int repeatingHeight;
 
 void draw(){
   background(255);
   
-  for (int y = backgroundHeight - repeatingHeight; y < height; y+= repeatingHeight){
+  for (int y = backgroundHeight - repeatingHeight; y < height; y+= repeatingHeight){ //draw repeating background
     for (int x = 0; x < width; x+= repeatingWidth){
      image(undergroundTile, x, y, repeatingWidth, repeatingHeight);
    }
@@ -126,10 +141,28 @@ void draw(){
   image(backgroundImage,0,0,backgroundWidth,backgroundHeight);
   image(backgroundAdditionalImage,0,0,backgroundWidth,backgroundHeight);
   player.draw(100,200);
-  
-  for (int i = enemies.size()-1; i >= 0; i--){
+  int x, y;
+  for (int i = enemies.size()-1; i >= 0; i--){ //draw enemies
    Enemy enemy = enemies.get(i);
-   enemy.draw(width - enemyLeft - (enemyPadding + enemy.getWidth())*(enemies.size() - i), 200);
+   x = width - enemyLeft - (enemyPadding + enemy.getWidth())*(enemies.size() - i);
+   y = 200;
+   enemy.draw(x, y);
+    if (mouseMode == "target"){ //draws red targeting things
+      //top left corner
+      stroke(255,0,0);
+      line (x,y, x + 20 ,y);
+      line (x,y, x, y+ 20);
+      
+      line (x,y + enemy.getHeight(), x + 20 ,y + enemy.getHeight());
+      line (x,y + enemy.getHeight(), x, y + enemy.getHeight()- 20);
+      
+      line (x + enemy.getWidth(),y, x+ enemy.getWidth() - 20 ,y);
+      line (x+ enemy.getWidth(),y, x+ enemy.getWidth(), y+ 20);
+      
+      line (x+ enemy.getWidth(),y + enemy.getHeight(), x+ enemy.getWidth() - 20 ,y + enemy.getHeight());
+      line (x+ enemy.getWidth(),y + enemy.getHeight(), x+ enemy.getWidth(), y + enemy.getHeight() - 20);
+      
+    }
   }
   
   drawHand();
@@ -138,7 +171,33 @@ void draw(){
   
 }
 
+void handleActions(boolean playerPlayed, Enemy target, ArrayList<Action> actions){
+  //not even close to working, only handles player actions, and barely.
+  
+  for (Action action : actions){
+   if (action.getType().equals("a")){
+     if (action.getTarget()){
+      target.damage(action.getAmount()); 
+     }
+   }
+   else if (action.getType().equals("b")){
+     player.addBlock(action.getAmount());
+   }
+  }
+}
 
+
+void playCard(){
+  
+  if (selectedCard.getTargets()){
+   mouseMode = "target"; 
+  }
+  else{
+  hand.remove(selectedCard);
+  handleActions(true, null, selectedCard.getActions());
+  selectedCard = null;
+ }
+}
 
 void shuffleDeck(){ //shuffles the in combat deck
  ArrayList<Card> tempDeck = new ArrayList<Card>();
@@ -163,8 +222,9 @@ void drawToLimit(){ //draws up to the hand limit
 }
 
 
-void handleMouse(){ //handles the mouse 
- if (mousePressed){
+
+void handleMouseCard(){
+  if (mousePressed){
   if (selectedCard == null){
     setSelectedCard();
   }
@@ -174,9 +234,44 @@ void handleMouse(){ //handles the mouse
  }
  else{
   if (selectedCard != null){
-   selectedCard = null;
+   if (mouseX > 0 && mouseX < width &&mouseY > 0 && mouseY < handTop){
+     playCard(); 
+    }
+   else{
+    selectedCard = null; 
+   }
 
   }
+ }
+}
+
+
+void handleMouseTarget(){
+  if (mousePressed){
+  int x,y;
+  for (int i = enemies.size()-1; i >= 0; i--){ //draw enemies
+   Enemy enemy = enemies.get(i);
+   x = width - enemyLeft - (enemyPadding + enemy.getWidth())*(enemies.size() - i);
+   y = 200;
+    if (mouseX > x && mouseX < x + enemy.getWidth() && mouseY > y && mouseY < y + enemy.getHeight()){
+      hand.remove(selectedCard);
+      handleActions(true, enemy, selectedCard.getActions());
+      selectedCard = null;
+      mouseMode = "card";
+      return;
+    }
+  }
+  selectedCard = null;
+  mouseMode = "card";
+  }
+}
+
+void handleMouse(){ //handles the mouse and dragging of cards
+ if (mouseMode == "card"){
+  handleMouseCard(); 
+ }
+ else if (mouseMode == "target"){
+    handleMouseTarget();
  }
 }
 

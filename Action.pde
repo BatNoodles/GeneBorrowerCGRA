@@ -10,6 +10,16 @@ class Action{
    this.amount = amount;
  }
  
+ public String getType(){
+  return this.type; 
+ }
  
+ public boolean getTarget(){
+  return this.targetOther; 
+ }
+ 
+ public int getAmount(){
+  return this.amount; 
+ }
  
 }

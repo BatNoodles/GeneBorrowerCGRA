@@ -7,10 +7,12 @@ class Player{
  private int energy;
  private int maxEnergy;
  
+ private int defense;
+ 
  private PImage image;
  private String imageFilename;
   
-  
+ private PImage blockImage;
   
 private int textureMult;
  
@@ -20,13 +22,13 @@ private int textureMult;
  private int healthbarHeight;
  
  private PImage shadow;
- public Player(int maxHealth, int maxEnergy, String imageFilename, int textureMult, PImage shadow){
+ public Player(int maxHealth, int maxEnergy, String imageFilename, int textureMult, PImage shadow, PImage block){
      this.health = maxHealth;
      this.maxHealth = health;
      this.energy = maxEnergy;
      this.maxEnergy = maxEnergy;
      this.deck = new ArrayList<Card>();
-     
+     this.defense = 0;
      this.shadow = shadow;
      this.imageFilename = imageFilename;
      
@@ -35,6 +37,7 @@ private int textureMult;
      this.textureMult = textureMult;
      this.healthbarHeight = 20;
      this.healthbarWidth = (int)(this.image.width * this.textureMult);
+     this.blockImage = block;
  }
  
  
@@ -52,12 +55,14 @@ private int textureMult;
  
  public boolean damage(int damage){
   this.health -= damage;
-  if (this.health <= 0) {
-   return true;
-  }
-  return false;
+  return health <= 0;
  }
  
+ 
+ 
+ public void addBlock(int amount){
+   this.defense += amount;
+ }
  
  public void draw(int x, int y){
    
@@ -70,6 +75,15 @@ private int textureMult;
    rect(x - (this.image.width * textureMult - this.healthbarWidth)/2, y + this.image.height * this.textureMult + this.healthbarHeight * 1.5, this.healthbarWidth, this.healthbarHeight);
    fill(0,255,0);
    rect(x - (this.image.width * textureMult - this.healthbarWidth)/2, y + this.image.height * this.textureMult + this.healthbarHeight * 1.5, this.healthbarWidth * this.health / this.maxHealth, this.healthbarHeight);
+   int blockX =x - (this.image.width * textureMult - this.healthbarWidth)/2 + this.healthbarWidth; 
+   float blockY = y + this.image.height * this.textureMult + this.healthbarHeight * 1.75 - this.blockImage.height * this.textureMult  / 2;
+   image(this.blockImage, blockX,  blockY, this.blockImage.width * this.textureMult, this.blockImage.height * this.textureMult);
+   
+   
+   
+   fill(0,0,0);
+   textAlign(CENTER);
+   text(Integer.toString(defense), blockX, blockY + blockImage.height * textureMult * 0.2, blockImage.width * textureMult, blockImage.height * textureMult);
    
    
  }
