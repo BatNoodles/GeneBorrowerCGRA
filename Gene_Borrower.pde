@@ -3,9 +3,11 @@ void setup(){
   hand = new ArrayList<Card>();
   
   
- backgroundImage = loadImage("sprites/backgroundSunset.png");
- backgroundAdditionalImage = loadImage("sprites/backgroundSunsetTrees.png");  
-  
+ backgroundImage = loadImage(backgroundName);
+ backgroundAdditionalImage = loadImage(backgroundDetail);  
+ 
+  backgroundWidth = backgroundImage.width * 8;
+  backgroundHeight = backgroundImage.height * 8;
   
   
   size(1920, 1080, P2D); //making the pixel art not look terrible
@@ -30,6 +32,14 @@ void setup(){
    cardSet.put(card.name, card);
   }
   
+  
+  undergroundTile = loadImage(repeatingUndergroundName);
+  repeatingWidth = undergroundTile.width * 8;
+  repeatingHeight = undergroundTile.height * 8;
+  PImage playerSprite = loadImage(playerSpriteName);
+  playerWidth = playerSprite.width * 8;
+  playerHeight = playerSprite.height * 8;
+  playerSprite = null;
   player = new Player(100, 3, playerSpriteName, playerWidth, playerHeight); //creates the player
   player.constructBasicDeck(cardSet.get(basicPunchName), cardSet.get(basicEvadeName));  
   
@@ -37,6 +47,10 @@ void setup(){
   shuffleDeck();
   drawToLimit();
   
+  
+  
+  
+  kobold = new Enemy("enemyData/kobold.txt", "enemySprites/kobold.png", 8);
   
   
 }
@@ -50,14 +64,20 @@ final int handLeft = 200; //setting up the hand
 final int handTop = 700;
 final int handPadding = 25;
 
+
+Enemy kobold;
+
 PImage backgroundImage;
 PImage backgroundAdditionalImage;
-final int backgroundWidth = 1920;
-final int backgroundHeight = 640;
+int backgroundWidth;
+int backgroundHeight;
+final String backgroundName = "sprites/backgroundSunset.png";
+final String backgroundDetail = "sprites/backgroundSunsetTrees.png";
+final String repeatingUndergroundName = "sprites/smallDirt.png";
 
 
-final int playerWidth = 32 * 8;
-final int playerHeight = 48 * 8;
+int playerWidth;
+int playerHeight;
 
 final String playerSpriteName = "sprites/playerSprite.png";
 
@@ -79,14 +99,21 @@ final String basicPunchName = "basicPunch";
 final String basicEvadeName = "basicEvade";
 
 
-
-
+PImage undergroundTile;
+int repeatingWidth;
+int repeatingHeight;
 
 void draw(){
   background(255);
+  for (int y = backgroundHeight - repeatingHeight; y < height; y+= repeatingHeight){
+    for (int x = 0; x < width; x+= repeatingWidth){
+     image(undergroundTile, x, y, repeatingWidth, repeatingHeight);
+   }
+  }
   image(backgroundImage,0,0,backgroundWidth,backgroundHeight);
   image(backgroundAdditionalImage,0,0,backgroundWidth,backgroundHeight);
   player.draw(100,200);
+  kobold.draw(1600,200);
   drawHand();
   handleMouse();
   

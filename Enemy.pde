@@ -4,14 +4,12 @@
  name
  maxhealth
  
- //then all of the action groups (as a monsters action could have multiple sub actions, such as attacking and healing, etc)
- associated gene/body part
- whether or not the action targets the monster
- action type: attack, evade or some kind off buff (buffs to be added later)
- action amount
- ...
- \n to seperate action groups
- 
+//list of actiongroups
+associated gene
+targetSelf(true or false) actionType(a,b, etc) amount repeating
+
+associated gene
+targetSelf(true or false) actionType(a,b, etc) amount repeating
  
  **/
 
@@ -30,7 +28,9 @@ class Enemy {
 
   private String name;
 
-  public Enemy(String filename, String imageFilename) {
+  private int imageSizeMult;
+
+  public Enemy(String filename, String imageFilename, int imageSizeMult) {
     this.filename = filename;
     this.imageFilename = imageFilename;
     this.image = loadImage(this.imageFilename);
@@ -40,6 +40,7 @@ class Enemy {
     this.maxHealth = Integer.parseInt(lines[1]);
     this.health = this.maxHealth;
     
+    this.imageSizeMult = imageSizeMult;
     
     possibleActions = new ArrayList<EnemyActionGroup>();
     
@@ -48,8 +49,16 @@ class Enemy {
     
     //loading action groups
     
+    for (int i = 2; i < lines.length; i += 2){
+     this.possibleActions.add(new EnemyActionGroup(lines[i], lines[i+1])); 
+    }
     
     
-    
+  }
+  
+  
+  
+  public void draw(int x, int y){
+    image(this.image, x, y, this.image.width * this.imageSizeMult, this.image.height * this.imageSizeMult);
   }
 }

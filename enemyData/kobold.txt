@@ -1,0 +1,12 @@
+Kobold
+75
+Arms
+false a 5
+Arms
+false a 4 false a 4
+Legs
+true b 5
+Legs
+true b 4 true b 4
+Head
+true b 3 false a 3
