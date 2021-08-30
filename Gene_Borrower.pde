@@ -3,7 +3,7 @@
 
 void setup(){
   playerTurn = true;
-  textFont(createFont("fonts/VT323-Regular.ttf", 30));
+  textFont(createFont("fonts/ARCADECLASSIC.TTF", 30));
   frameRate(155); //only used so it looks smooth on my monitor :)
   hand = new ArrayList<Card>();
   dropShadow = loadImage(dropShadowTexture); //shadow texture used by all entities
@@ -20,6 +20,8 @@ void setup(){
   noSmooth();
   
 
+  turnBanner = new TextWithBackground("Your Turn", "sprites/turnSign.png", globalTextureMultiplier);
+  turnBanner.setFramesLeft(300);
   enemyMap = new HashMap<String, Enemy>(); //storing all the different kinds of enemies
   
   cardSet = new HashMap<String, Card>(); 
@@ -143,6 +145,10 @@ boolean playerTurn;
 
 Button pressedButton;
 
+
+
+TextWithBackground turnBanner;
+
 void draw(){
   background(255);
   
@@ -182,6 +188,7 @@ void draw(){
   }
   
   drawHand();
+  turnBanner.draw(width/2, (int)(height * 0.3));
   handleMouse();
   
   
@@ -214,7 +221,6 @@ void handleActions(Entity source, Entity target, ArrayList<Action> actions){
 
 
 void playCard(){
-  
   if (selectedCard.getTargets()){
    mouseMode = "target"; 
   }
@@ -253,6 +259,9 @@ void doButtonActions(String buttonName){
    case "endTurn":
      if (playerTurn){
       playerTurn = false; 
+      turnBanner.setText("Enemy Turn");
+      turnBanner.setFramesLeft(300);
+      turnBanner.draw(width/2, (int)(height * 0.3));
      }
   }
 }

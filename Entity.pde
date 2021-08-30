@@ -74,6 +74,7 @@ abstract class Entity{
    
    
    fill(0,0,0);
+   textSize(30);
    textAlign(CENTER);
    text(Integer.toString(defense), blockX, blockY + blockImage.height * textureMult * 0.2, blockImage.width * textureMult, blockImage.height * textureMult);
    
