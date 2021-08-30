@@ -2,6 +2,7 @@
 
 
 void setup(){
+  playerTurn = true;
   textFont(createFont("fonts/VT323-Regular.ttf", 30));
   frameRate(155); //only used so it looks smooth on my monitor :)
   hand = new ArrayList<Card>();
@@ -35,6 +36,8 @@ void setup(){
    
    cardSet.put(card.name, card);
   }
+  buttons = new HashMap<String, Button>();
+  buttons.put("endTurn", new Button(loadImage("sprites/endTurnSheet.png"), 1500, 800, globalTextureMultiplier, "endTurn"));
   
   
   undergroundTile = loadImage(repeatingUndergroundName); //repeating tile for undergroud, where the hand is drawn
@@ -124,12 +127,21 @@ String mouseMode;
 
 Enemy targetedEnemy;
 
+HashMap<String, Button> buttons;
+
 
 PImage undergroundTile;
 PImage dropShadow;
 PImage blockImage;
 int repeatingWidth;
 int repeatingHeight;
+
+
+
+boolean playerTurn;
+
+
+Button pressedButton;
 
 void draw(){
   background(255);
@@ -142,6 +154,9 @@ void draw(){
   image(backgroundImage,0,0,backgroundWidth,backgroundHeight);
   image(backgroundAdditionalImage,0,0,backgroundWidth,backgroundHeight);
   player.draw(100,200);
+  for (String buttonKey : buttons.keySet()){
+   buttons.get(buttonKey).draw(); 
+  }
   int x, y;
   for (int i = enemies.size()-1; i >= 0; i--){ //draw enemies
    Enemy enemy = enemies.get(i);
@@ -233,6 +248,37 @@ void drawToLimit(){ //draws up to the hand limit
 }
 
 
+void doButtonActions(String buttonName){
+  switch(buttonName){
+   case "endTurn":
+     if (playerTurn){
+      playerTurn = false; 
+     }
+  }
+}
+
+void handleButtons(){
+  
+  if (mousePressed && pressedButton == null && selectedCard == null){
+   
+   for (Button button : buttons.values()){
+      
+    if (button.checkInside(mouseX, mouseY)){
+     button.press();
+     pressedButton = button;
+    }
+   }
+  }
+  else if(pressedButton != null && !mousePressed){
+    pressedButton.depress();
+   if (pressedButton.checkInside(mouseX, mouseY)){
+     doButtonActions(pressedButton.getName());
+   }
+   pressedButton = null;
+  }
+  
+}
+
 
 void handleMouseCard(){
   if (mousePressed){
@@ -278,12 +324,15 @@ void handleMouseTarget(){
 }
 
 void handleMouse(){ //handles the mouse and dragging of cards
- if (mouseMode == "card"){
-  handleMouseCard(); 
- }
- else if (mouseMode == "target"){
-    handleMouseTarget();
- }
+handleButtons();
+if (playerTurn){
+   if (mouseMode == "card"){
+    handleMouseCard(); 
+   }
+   else if (mouseMode == "target"){
+      handleMouseTarget();
+   }
+}
 }
 
 
