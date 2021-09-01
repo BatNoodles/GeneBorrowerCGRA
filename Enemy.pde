@@ -25,7 +25,8 @@ public class Enemy extends Entity{
 
   private String name;
   private String[] lines;
-   
+  
+  private EnemyActionGroup nextAction;
 
 
   public Enemy(String[] lines, String imageFilename, int textureMult, PImage shadow, PImage block) {
@@ -45,7 +46,7 @@ public class Enemy extends Entity{
      this.possibleActions.add(new EnemyActionGroup(lines[i], lines[i+1])); 
     }
     
-    
+    nextAction = possibleActions.get((int)random(possibleActions.size()));
   }
   
   
@@ -60,6 +61,18 @@ public class Enemy extends Entity{
   public Enemy clone(){
    return new Enemy(this.lines, this.imageFilename, this.textureMult, this.shadow, this.blockImage); 
   }
+  
+
+  public String getGene(){
+   return this.nextAction.getGene(); 
+  }
+  
+  public EnemyActionGroup replaceAction(){
+    EnemyActionGroup temp = nextAction.clone();
+    nextAction = possibleActions.get((int)random(possibleActions.size()));
+    return temp;
+  }
+  
   
 
 }

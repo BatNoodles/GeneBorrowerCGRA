@@ -56,7 +56,7 @@ void setup(){
   //TODO read all enemies from the enemy folder
   
   enemyMap.put("Kobold",new Enemy(loadStrings("enemyData/kobold.txt"), "enemySprites/kobold.png", globalTextureMultiplier, dropShadow, blockImage));
-  
+  actionQueue = new ArrayList<EnemyAction>();
   
   
   //TODO but not for a long time: add sprite sheets and animations (easier said than done)
@@ -118,6 +118,10 @@ Player player;
 
 HashMap<String, Enemy> enemyMap;
 
+ArrayList<EnemyActionGroup> actionGroupQueue;
+
+
+
 final int enemyPadding = 65;
 final int enemyLeft = 100;
 
@@ -138,14 +142,15 @@ PImage blockImage;
 int repeatingWidth;
 int repeatingHeight;
 
-
+ArrayList<EnemyAction> actionQueue;
+final int enemyDelay = 125;
+final int actionDelay = 75;
+int enemyTurnDelay;
 
 boolean playerTurn;
 
 
 Button pressedButton;
-
-
 
 TextWithBackground turnBanner;
 
@@ -190,14 +195,37 @@ void draw(){
   drawHand();
   turnBanner.draw(width/2, (int)(height * 0.3));
   handleMouse();
-  
+  if (!playerTurn){
+   handleEnemyTurn(); 
+  }
   
 }
 
+
+void handleEnemyTurn(){
+  if (enemyTurnDelay == 0){
+    
+   EnemyAction a = actionQueue.remove(0);
+   ArrayList<Action> aList = new ArrayList<Action>();
+  aList.add(a);
+ handleActions(a.getEnemy(), player, aList);
+ if (actionQueue.isEmpty()){
+      playerTurn = true;
+      turnBanner.setText("Your Turn");
+      turnBanner.setFramesLeft(155);
+      return;
+    }
+ enemyTurnDelay = actionQueue.get(0).getDelay();
+  }
+  enemyTurnDelay--;
+}
+
+
 void handleActions(Entity source, Entity target, ArrayList<Action> actions){
   //not even close to working, only handles player actions, and barely.
-  
   for (Action action : actions){
+    println(action.getType());
+    println(action.getAmount());
       switch (action.getType()){
        case "a":
          if (action.getTarget()){
@@ -254,14 +282,35 @@ void drawToLimit(){ //draws up to the hand limit
 }
 
 
+void setupEnemyActions(){
+  enemyTurnDelay = 325;
+  for (Enemy e : enemies){
+   EnemyActionGroup g = e.replaceAction();
+   
+   for (int i = 0; i < g.getSize(); i++){
+     EnemyAction a = g.get(i);
+     if (i == 0){
+      a.setDelay(enemyDelay);
+    }
+    else{
+     a.setDelay(actionDelay); 
+    }
+    a.setEnemy(e);
+    actionQueue.add(a);
+   }
+  }
+  
+}
+
 void doButtonActions(String buttonName){
   switch(buttonName){
    case "endTurn":
      if (playerTurn){
       playerTurn = false; 
       turnBanner.setText("Enemy Turn");
-      turnBanner.setFramesLeft(300);
+      turnBanner.setFramesLeft(155);
       turnBanner.draw(width/2, (int)(height * 0.3));
+      setupEnemyActions();
      }
   }
 }

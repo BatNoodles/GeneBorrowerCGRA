@@ -1,12 +1,12 @@
 Kobold
 75
 Arms
-false a 5
+a 1 5
 Arms
-false a 4 false a 4
+a 1 4 a 1 4
 Legs
-true b 5
+b 0 5
 Legs
-true b 4 true b 4
+b 0 4 b 0 4
 Head
-true b 3 false a 3
+b 0 3 a 1 3
