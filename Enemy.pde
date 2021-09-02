@@ -73,6 +73,11 @@ public class Enemy extends Entity{
     return temp;
   }
   
+  public void drawNextAttack(int x, int y){
+    textSize(30);
+    text("Next action:",x,y,this.image.width * this.textureMult, 35);
+    text(this.nextAction.getGene(), x, y + 35, this.image.width * this.textureMult, 35);
+  }
   
 
 }

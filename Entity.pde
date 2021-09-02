@@ -34,6 +34,10 @@ abstract class Entity{
   
   
   
+  public void clearBlock(){
+   this.defense = 0; 
+  }
+  
   
   public boolean damage(int damage){
    assert damage > 0 : "Damage cannot be negative, use heal instead";
@@ -54,6 +58,10 @@ abstract class Entity{
    this.defense += amount;
  }
  
+ 
+ public int getHealth(){
+  return this.health; 
+ }
   
   
    public void draw(int x, int y){
@@ -77,7 +85,8 @@ abstract class Entity{
    textSize(30);
    textAlign(CENTER);
    text(Integer.toString(defense), blockX, blockY + blockImage.height * textureMult * 0.2, blockImage.width * textureMult, blockImage.height * textureMult);
-   
+   textSize(20);
+   text(this.health + "/" + this.maxHealth, x-(this.image.width * textureMult - this.healthbarWidth)/2, y + this.image.height * this.textureMult + this.healthbarHeight * 1.5, this.healthbarWidth, this.healthbarHeight);
    
  }
   

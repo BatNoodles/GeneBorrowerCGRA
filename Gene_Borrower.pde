@@ -3,9 +3,10 @@
 
 void setup(){
   playerTurn = true;
-  textFont(createFont("fonts/ARCADECLASSIC.TTF", 30));
+  textFont(createFont("fonts/VT323-Regular.ttf", 30));
   frameRate(155); //only used so it looks smooth on my monitor :)
   hand = new ArrayList<Card>();
+  discard = new ArrayList<Card>();
   dropShadow = loadImage(dropShadowTexture); //shadow texture used by all entities
   blockImage = loadImage(blockTexture);
  backgroundImage = loadImage(backgroundName); //loading backgrounds
@@ -169,11 +170,19 @@ void draw(){
    buttons.get(buttonKey).draw(); 
   }
   int x, y;
+  for (int i = enemies.size()-1; i >= 0; i--){
+   if (enemies.get(i).getHealth() <= 0){
+    enemies.remove(i) ;
+   }
+  }
   for (int i = enemies.size()-1; i >= 0; i--){ //draw enemies
    Enemy enemy = enemies.get(i);
    x = width - enemyLeft - (enemyPadding + enemy.getWidth())*(enemies.size() - i);
    y = 200;
    enemy.draw(x, y);
+   if (playerTurn){
+    enemy.drawNextAttack(x,y-100); 
+   }
     if (mouseMode == "target"){ //draws red targeting things
       //top left corner
       stroke(255,0,0);
@@ -211,8 +220,10 @@ void handleEnemyTurn(){
  handleActions(a.getEnemy(), player, aList);
  if (actionQueue.isEmpty()){
       playerTurn = true;
+      drawToLimit();
       turnBanner.setText("Your Turn");
       turnBanner.setFramesLeft(155);
+      player.clearBlock();
       return;
     }
  enemyTurnDelay = actionQueue.get(0).getDelay();
@@ -255,6 +266,7 @@ void playCard(){
   else{
   hand.remove(selectedCard);
   handleActions(player, null, selectedCard.getActions());
+  discard.add(selectedCard);
   selectedCard = null;
  }
 }
@@ -277,6 +289,11 @@ void setupDeck(){ //gets the deck from the player object
 
 void drawToLimit(){ //draws up to the hand limit
  while (hand.size() < drawLimit){
+   if (deck.size() == 0){
+     deck.addAll(discard);
+     discard.clear();
+     shuffleDeck();
+   }
   hand.add(deck.remove(0)); 
  }
 }
@@ -285,6 +302,7 @@ void drawToLimit(){ //draws up to the hand limit
 void setupEnemyActions(){
   enemyTurnDelay = 325;
   for (Enemy e : enemies){
+   e.clearBlock();
    EnemyActionGroup g = e.replaceAction();
    
    for (int i = 0; i < g.getSize(); i++){
@@ -371,6 +389,7 @@ void handleMouseTarget(){
     if (mouseX > x && mouseX < x + enemy.getWidth() && mouseY > y && mouseY < y + enemy.getHeight()){
       hand.remove(selectedCard);
       handleActions(player, enemy, selectedCard.getActions());
+      discard.add(selectedCard);
       selectedCard = null;
       mouseMode = "card";
       return;
