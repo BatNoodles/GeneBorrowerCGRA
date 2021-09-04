@@ -11,14 +11,14 @@ class TextWithBackground{
  }
  
  
- public void draw(int x, int y){
+ public void draw(int x, int y, int textSize){
    if (framesLeft == 0) return;
    int actualX =  x - backgroundImage.width * textureMult / 2;
    int actualY = y - backgroundImage.height * textureMult / 2;
    image(backgroundImage, actualX,actualY, backgroundImage.width * textureMult, backgroundImage.height * textureMult);
-   textSize(60);
+   textSize(textSize);
    text(this.text, actualX,actualY + backgroundImage.height * textureMult / 2 - backgroundImage.height * textureMult / 6, backgroundImage.width * textureMult, backgroundImage.height * textureMult / 2);
-   framesLeft--;
+   if (framesLeft > 0 )framesLeft--;
  }
  
  public void setText(String text){

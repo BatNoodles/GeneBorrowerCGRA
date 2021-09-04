@@ -29,8 +29,8 @@ public class Enemy extends Entity{
   private EnemyActionGroup nextAction;
 
 
-  public Enemy(String[] lines, String imageFilename, int textureMult, PImage shadow, PImage block) {
-    super(Integer.parseInt(lines[1]), block, shadow, textureMult, imageFilename);
+  public Enemy(String[] lines, String imageFilename, int textureMult, PImage shadow, PImage block, int x, int y) {
+    super(Integer.parseInt(lines[1]), block, shadow, textureMult, imageFilename, x, y);
     this.lines = lines;
     
     this.name = lines[0];
@@ -50,16 +50,10 @@ public class Enemy extends Entity{
   }
   
   
-  public int getWidth(){
-   return this.image.width * this.textureMult; 
-  }
-  
-  public int getHeight(){
-   return this.image.height * this.textureMult; 
-  }
+ 
   
   public Enemy clone(){
-   return new Enemy(this.lines, this.imageFilename, this.textureMult, this.shadow, this.blockImage); 
+   return new Enemy(this.lines, this.imageFilename, this.textureMult, this.shadow, this.blockImage, this.x, this.y); 
   }
   
 
@@ -73,7 +67,8 @@ public class Enemy extends Entity{
     return temp;
   }
   
-  public void drawNextAttack(int x, int y){
+  public void drawNextAttack(){
+    int y = this.y - 200;
     textSize(30);
     text("Next action:",x,y,this.image.width * this.textureMult, 35);
     text(this.nextAction.getGene(), x, y + 35, this.image.width * this.textureMult, 35);

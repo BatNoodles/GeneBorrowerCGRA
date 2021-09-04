@@ -15,10 +15,11 @@ abstract class Entity{
  protected int healthbarWidth;
  protected int healthbarHeight;
  
+ protected int x;
+ protected int y;
  
  
- 
- public Entity(int maxHealth, PImage blockImage, PImage shadow, int textureMult, String imageFilename){
+ public Entity(int maxHealth, PImage blockImage, PImage shadow, int textureMult, String imageFilename, int x, int y){
   this.maxHealth = maxHealth;
   this.health = maxHealth;
   this.blockImage = blockImage;
@@ -30,10 +31,33 @@ abstract class Entity{
   
   this.healthbarHeight = 20;
   this.healthbarWidth = (int)(this.image.width * this.textureMult);
+  
+  this.x = x;
+  this.y = y;
  }
   
   
+  public int getWidth(){
+   return this.image.width * this.textureMult; 
+  }
   
+  public int getHeight(){
+   return this.image.height * this.textureMult; 
+  }
+  
+  public void setX(int x){
+    this.x = x;
+  }
+  public void setY(int y){
+    this.y = y;
+  }
+  
+ public int getX(){
+  return this.x;
+ }
+ public int getY(){
+   return this.y;
+ }
   public void clearBlock(){
    this.defense = 0; 
   }
@@ -64,7 +88,7 @@ abstract class Entity{
  }
   
   
-   public void draw(int x, int y){
+   public void draw(){
    
    noStroke();   
    image(this.shadow, x + (this.image.width * this.textureMult - this.shadow.width * this.textureMult) / 2, y + this.image.height * this.textureMult - 0.5 * this.textureMult * this.shadow.height, this.shadow.width * this.textureMult,this.shadow.height * this.textureMult);

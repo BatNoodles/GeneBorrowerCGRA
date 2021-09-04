@@ -2,7 +2,7 @@
 
 
 void setup(){
-  playerTurn = true;
+  
   textFont(createFont("fonts/VT323-Regular.ttf", 30));
   frameRate(155); //only used so it looks smooth on my monitor :)
   hand = new ArrayList<Card>();
@@ -23,6 +23,8 @@ void setup(){
 
   turnBanner = new TextWithBackground("Your Turn", "sprites/turnSign.png", globalTextureMultiplier);
   turnBanner.setFramesLeft(300);
+  energyCounter = new TextWithBackground("3", energyImageName, globalTextureMultiplier);
+  energyCounter.setFramesLeft(-1);
   enemyMap = new HashMap<String, Enemy>(); //storing all the different kinds of enemies
   
   cardSet = new HashMap<String, Card>(); 
@@ -46,32 +48,50 @@ void setup(){
   undergroundTile = loadImage(repeatingUndergroundName); //repeating tile for undergroud, where the hand is drawn
   repeatingWidth = undergroundTile.width * globalTextureMultiplier;
   repeatingHeight = undergroundTile.height * globalTextureMultiplier;
-  player = new Player(100, 3, playerSpriteName, globalTextureMultiplier, dropShadow, blockImage); //creates the player
+  player = new Player(100, 3, playerSpriteName, globalTextureMultiplier, dropShadow, blockImage, 100, 200); //creates the player
   player.constructBasicDeck(cardSet.get(basicPunchName), cardSet.get(basicEvadeName));  
-  setupDeck();
-  shuffleDeck();
-  drawToLimit();
+  
   
   
   
   //TODO read all enemies from the enemy folder
   
-  enemyMap.put("Kobold",new Enemy(loadStrings("enemyData/kobold.txt"), "enemySprites/kobold.png", globalTextureMultiplier, dropShadow, blockImage));
-  actionQueue = new ArrayList<EnemyAction>();
+  enemyMap.put("Kobold",new Enemy(loadStrings("enemyData/kobold.txt"), "enemySprites/kobold.png", globalTextureMultiplier, dropShadow, blockImage, 0, 0));
   
   
+ 
   //TODO but not for a long time: add sprite sheets and animations (easier said than done)
   
   
-  enemies = new ArrayList<Enemy>();
   
-  enemies.add(enemyMap.get("Kobold").clone());
-  enemies.add(enemyMap.get("Kobold").clone());
   
+  setupBattle();
   
   
   
+}
+
+
+void setupBattle(){ //code that is used to reset the battle
+  damageNumbers = new ArrayList<FadingText>();
   mouseMode = "card";
+  actionQueue = new ArrayList<EnemyAction>();
+  hand = new ArrayList<Card>();
+  discard = new ArrayList<Card>();
+  enemies = new ArrayList<Enemy>();
+  playerTurn = true;
+  enemies.add(enemyMap.get("Kobold").clone());
+  enemies.add(enemyMap.get("Kobold").clone());
+  for (int i = enemies.size()-1; i >= 0; i--){ //draw enemies
+     Enemy enemy = enemies.get(i);
+     int x = width - enemyLeft - (enemyPadding + enemy.getWidth())*(enemies.size() - i);
+     int y = 200;
+     enemy.setX(x);
+     enemy.setY(y);
+   }
+  setupDeck();
+  shuffleDeck();
+  drawToLimit();
 }
 
 
@@ -150,10 +170,13 @@ int enemyTurnDelay;
 
 boolean playerTurn;
 
+ArrayList<FadingText> damageNumbers;
 
 Button pressedButton;
 
 TextWithBackground turnBanner;
+TextWithBackground energyCounter;
+final String energyImageName = "sprites/helixEnergy.png";
 
 void draw(){
   background(255);
@@ -165,7 +188,7 @@ void draw(){
   }
   image(backgroundImage,0,0,backgroundWidth,backgroundHeight);
   image(backgroundAdditionalImage,0,0,backgroundWidth,backgroundHeight);
-  player.draw(100,200);
+  player.draw();
   for (String buttonKey : buttons.keySet()){
    buttons.get(buttonKey).draw(); 
   }
@@ -177,11 +200,11 @@ void draw(){
   }
   for (int i = enemies.size()-1; i >= 0; i--){ //draw enemies
    Enemy enemy = enemies.get(i);
-   x = width - enemyLeft - (enemyPadding + enemy.getWidth())*(enemies.size() - i);
-   y = 200;
-   enemy.draw(x, y);
+   x = enemy.getX();
+   y = enemy.getY();
+   enemy.draw();
    if (playerTurn){
-    enemy.drawNextAttack(x,y-100); 
+    enemy.drawNextAttack(); 
    }
     if (mouseMode == "target"){ //draws red targeting things
       //top left corner
@@ -199,10 +222,18 @@ void draw(){
       line (x+ enemy.getWidth(),y + enemy.getHeight(), x+ enemy.getWidth(), y + enemy.getHeight() - 20);
       
     }
+    
   }
-  
+  for (int i = damageNumbers.size() - 1; i >= 0; i--){
+      FadingText t = damageNumbers.get(i);
+      t.draw();
+      if (t.done()) damageNumbers.remove(i);
+    }
+    fill(0,255);
   drawHand();
-  turnBanner.draw(width/2, (int)(height * 0.3));
+  energyCounter.setText(Integer.toString(player.getEnergy()));
+  energyCounter.draw(50,800, 80);
+  turnBanner.draw(width/2, (int)(height * 0.3), 60);
   handleMouse();
   if (!playerTurn){
    handleEnemyTurn(); 
@@ -232,6 +263,12 @@ void handleEnemyTurn(){
 }
 
 
+void addDamageNumber(Entity target, int amount){
+  int x = (int)random(target.getX(), target.getX() + target.getWidth());
+  int y = (int)random(target.getY(), target.getY() + target.getHeight()/2);
+  damageNumbers.add(new FadingText(155, Integer.toString(amount),x,y));
+}
+
 void handleActions(Entity source, Entity target, ArrayList<Action> actions){
   //not even close to working, only handles player actions, and barely.
   for (Action action : actions){
@@ -241,9 +278,11 @@ void handleActions(Entity source, Entity target, ArrayList<Action> actions){
        case "a":
          if (action.getTarget()){
            target.damage(action.getAmount());
+           addDamageNumber(target, action.getAmount());
          }
          else{
           source.damage(action.getAmount()); 
+          addDamageNumber(source, action.getAmount());
          }
          break;
        case "b":
@@ -327,7 +366,7 @@ void doButtonActions(String buttonName){
       playerTurn = false; 
       turnBanner.setText("Enemy Turn");
       turnBanner.setFramesLeft(155);
-      turnBanner.draw(width/2, (int)(height * 0.3));
+      turnBanner.draw(width/2, (int)(height * 0.3), 60);
       setupEnemyActions();
      }
   }
