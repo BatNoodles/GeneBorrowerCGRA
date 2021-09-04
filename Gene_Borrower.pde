@@ -68,7 +68,6 @@ void setup(){
   setupBattle();
   
   
-  
 }
 
 
@@ -92,6 +91,7 @@ void setupBattle(){ //code that is used to reset the battle
   setupDeck();
   shuffleDeck();
   drawToLimit();
+  gameState = "battle";
 }
 
 
@@ -178,67 +178,70 @@ TextWithBackground turnBanner;
 TextWithBackground energyCounter;
 final String energyImageName = "sprites/helixEnergy.png";
 
+String gameState;
+
+
 void draw(){
   background(255);
-  
-  for (int y = backgroundHeight - repeatingHeight; y < height; y+= repeatingHeight){ //draw repeating background
-    for (int x = 0; x < width; x+= repeatingWidth){
-     image(undergroundTile, x, y, repeatingWidth, repeatingHeight);
-   }
-  }
-  image(backgroundImage,0,0,backgroundWidth,backgroundHeight);
-  image(backgroundAdditionalImage,0,0,backgroundWidth,backgroundHeight);
-  player.draw();
-  for (String buttonKey : buttons.keySet()){
-   buttons.get(buttonKey).draw(); 
-  }
-  int x, y;
-  for (int i = enemies.size()-1; i >= 0; i--){
-   if (enemies.get(i).getHealth() <= 0){
-    enemies.remove(i) ;
-   }
-  }
-  for (int i = enemies.size()-1; i >= 0; i--){ //draw enemies
-   Enemy enemy = enemies.get(i);
-   x = enemy.getX();
-   y = enemy.getY();
-   enemy.draw();
-   if (playerTurn){
-    enemy.drawNextAttack(); 
-   }
-    if (mouseMode == "target"){ //draws red targeting things
-      //top left corner
-      stroke(255,0,0);
-      line (x,y, x + 20 ,y);
-      line (x,y, x, y+ 20);
-      
-      line (x,y + enemy.getHeight(), x + 20 ,y + enemy.getHeight());
-      line (x,y + enemy.getHeight(), x, y + enemy.getHeight()- 20);
-      
-      line (x + enemy.getWidth(),y, x+ enemy.getWidth() - 20 ,y);
-      line (x+ enemy.getWidth(),y, x+ enemy.getWidth(), y+ 20);
-      
-      line (x+ enemy.getWidth(),y + enemy.getHeight(), x+ enemy.getWidth() - 20 ,y + enemy.getHeight());
-      line (x+ enemy.getWidth(),y + enemy.getHeight(), x+ enemy.getWidth(), y + enemy.getHeight() - 20);
+  if (gameState.equals("battle")){
+    for (int y = backgroundHeight - repeatingHeight; y < height; y+= repeatingHeight){ //draw repeating background
+      for (int x = 0; x < width; x+= repeatingWidth){
+       image(undergroundTile, x, y, repeatingWidth, repeatingHeight);
+     }
+    }
+    image(backgroundImage,0,0,backgroundWidth,backgroundHeight);
+    image(backgroundAdditionalImage,0,0,backgroundWidth,backgroundHeight);
+    player.draw();
+    for (String buttonKey : buttons.keySet()){
+     buttons.get(buttonKey).draw(); 
+    }
+    int x, y;
+    for (int i = enemies.size()-1; i >= 0; i--){
+     if (enemies.get(i).getHealth() <= 0){
+      enemies.remove(i) ;
+     }
+    }
+    for (int i = enemies.size()-1; i >= 0; i--){ //draw enemies
+     Enemy enemy = enemies.get(i);
+     x = enemy.getX();
+     y = enemy.getY();
+     enemy.draw();
+     if (playerTurn){
+      enemy.drawNextAttack(); 
+     }
+      if (mouseMode == "target"){ //draws red targeting things
+        //top left corner
+        stroke(255,0,0);
+        line (x,y, x + 20 ,y);
+        line (x,y, x, y+ 20);
+        
+        line (x,y + enemy.getHeight(), x + 20 ,y + enemy.getHeight());
+        line (x,y + enemy.getHeight(), x, y + enemy.getHeight()- 20);
+        
+        line (x + enemy.getWidth(),y, x+ enemy.getWidth() - 20 ,y);
+        line (x+ enemy.getWidth(),y, x+ enemy.getWidth(), y+ 20);
+        
+        line (x+ enemy.getWidth(),y + enemy.getHeight(), x+ enemy.getWidth() - 20 ,y + enemy.getHeight());
+        line (x+ enemy.getWidth(),y + enemy.getHeight(), x+ enemy.getWidth(), y + enemy.getHeight() - 20);
+        
+      }
       
     }
-    
-  }
-  for (int i = damageNumbers.size() - 1; i >= 0; i--){
-      FadingText t = damageNumbers.get(i);
-      t.draw();
-      if (t.done()) damageNumbers.remove(i);
+    for (int i = damageNumbers.size() - 1; i >= 0; i--){
+        FadingText t = damageNumbers.get(i);
+        t.draw();
+        if (t.done()) damageNumbers.remove(i);
+      }
+      fill(0,255);
+    drawHand();
+    energyCounter.setText(Integer.toString(player.getEnergy()));
+    energyCounter.draw(50,800, 80);
+    turnBanner.draw(width/2, (int)(height * 0.3), 60);
+    handleMouse();
+    if (!playerTurn){
+     handleEnemyTurn(); 
     }
-    fill(0,255);
-  drawHand();
-  energyCounter.setText(Integer.toString(player.getEnergy()));
-  energyCounter.draw(50,800, 80);
-  turnBanner.draw(width/2, (int)(height * 0.3), 60);
-  handleMouse();
-  if (!playerTurn){
-   handleEnemyTurn(); 
   }
-  
 }
 
 
