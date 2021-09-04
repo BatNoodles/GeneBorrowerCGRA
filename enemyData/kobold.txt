@@ -1,5 +1,9 @@
 Kobold
 75
+3
+koboldHorn
+koboldClaw
+koboldEvade
 Arms
 a 1 8
 Arms

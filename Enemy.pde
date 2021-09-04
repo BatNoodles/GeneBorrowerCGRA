@@ -26,6 +26,8 @@ public class Enemy extends Entity{
   private String name;
   private String[] lines;
   
+  private ArrayList<String> cardNames;
+  
   private EnemyActionGroup nextAction;
 
 
@@ -35,14 +37,18 @@ public class Enemy extends Entity{
     
     this.name = lines[0];
     
-
+    cardNames = new ArrayList<String>();
     
     possibleActions = new ArrayList<EnemyActionGroup>();
+    int cardNum = Integer.parseInt(lines[2]);
     
+    for (int i = 3; i < 4 + cardNum; i++){
+     cardNames.add(lines[i]); 
+    }
 
     //loading action groups
 
-    for (int i = 2; i < lines.length; i += 2){
+    for (int i = 3 + cardNum; i < lines.length; i += 2){
      this.possibleActions.add(new EnemyActionGroup(lines[i], lines[i+1])); 
     }
     
@@ -68,7 +74,7 @@ public class Enemy extends Entity{
   }
   
   public void drawNextAttack(){
-    int y = this.y - 200;
+    int y = this.y - 50;
     textSize(30);
     text("Next action:",x,y,this.image.width * this.textureMult, 35);
     text(this.nextAction.getGene(), x, y + 35, this.image.width * this.textureMult, 35);
