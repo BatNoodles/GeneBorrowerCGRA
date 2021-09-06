@@ -42,7 +42,7 @@ public class Enemy extends Entity{
     possibleActions = new ArrayList<EnemyActionGroup>();
     int cardNum = Integer.parseInt(lines[2]);
     
-    for (int i = 3; i < 4 + cardNum; i++){
+    for (int i = 3; i < 3 + cardNum; i++){
      cardNames.add(lines[i]); 
     }
 
@@ -67,6 +67,10 @@ public class Enemy extends Entity{
    return this.nextAction.getGene(); 
   }
   
+public ArrayList<String> getCards(){
+return this.cardNames;
+}
+
   public EnemyActionGroup replaceAction(){
     EnemyActionGroup temp = nextAction.clone();
     nextAction = possibleActions.get((int)random(possibleActions.size()));

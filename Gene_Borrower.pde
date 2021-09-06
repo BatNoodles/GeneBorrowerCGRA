@@ -39,7 +39,7 @@ void setup(){
    
    Card card = new Card(filename, imageName);
    
-   cardSet.put(card.name, card);
+   cardSet.put(card.getName(), card);
   }
   buttons = new HashMap<String, Button>();
   buttons.put("endTurn", new Button(loadImage("sprites/endTurnSheet.png"), 1500, 800, globalTextureMultiplier, "endTurn"));
@@ -51,8 +51,8 @@ void setup(){
   player = new Player(100, 3, playerSpriteName, globalTextureMultiplier, dropShadow, blockImage, 100, 200); //creates the player
   player.constructBasicDeck(cardSet.get(basicPunchName), cardSet.get(basicEvadeName));  
   
-  
-  
+  cardRewardButtonImage = loadImage("sprites/cardSelectButton.png");
+  rewardPane = loadImage("sprites/endBattlePane.png");
   
   //TODO read all enemies from the enemy folder
   
@@ -71,7 +71,8 @@ void setup(){
 }
 
 
-void setupBattle(){ //code that is used to reset the battle
+void setupBattle(){
+   //code that is used to reset the battle
   damageNumbers = new ArrayList<FadingText>();
   mouseMode = "card";
   actionQueue = new ArrayList<EnemyAction>();
@@ -88,6 +89,20 @@ void setupBattle(){ //code that is used to reset the battle
      enemy.setX(x);
      enemy.setY(y);
    }
+   cardButtons = new ArrayList<ButtonWithText>();
+  ArrayList<String> possibleCards = new ArrayList<String>();
+  for (Enemy e : enemies){
+    possibleCards.addAll(e.getCards());
+  }
+  for (int i = 0; i < cardRewardCount; i++){
+
+    String card = possibleCards.remove((int)random(0, possibleCards.size()));
+    println(card);
+    ButtonWithText b = new ButtonWithText(cardRewardButtonImage, 298, 
+    (int)(300 + i * cardRewardButtonImage.height * globalTextureMultiplier * 1.2), 
+    globalTextureMultiplier, "cardRewardButton", card, cardSet.get(card).getName());
+    cardButtons.add(b);
+  }
   setupDeck();
   shuffleDeck();
   drawToLimit();
@@ -180,17 +195,26 @@ final String energyImageName = "sprites/helixEnergy.png";
 
 String gameState;
 
+PImage cardRewardButtonImage;
+PImage rewardPane;
+ArrayList<ButtonWithText> cardButtons;
 
+final int cardRewardCount = 2;
 void draw(){
   background(255);
-  if (gameState.equals("battle")){
-    for (int y = backgroundHeight - repeatingHeight; y < height; y+= repeatingHeight){ //draw repeating background
+  for (int y = backgroundHeight - repeatingHeight; y < height; y+= repeatingHeight){ //draw repeating background
       for (int x = 0; x < width; x+= repeatingWidth){
        image(undergroundTile, x, y, repeatingWidth, repeatingHeight);
      }
     }
     image(backgroundImage,0,0,backgroundWidth,backgroundHeight);
     image(backgroundAdditionalImage,0,0,backgroundWidth,backgroundHeight);
+  if (gameState.equals("battle")){
+    if (enemies.size() == 0){
+     gameState = "reward"; 
+    }
+    
+    
     player.draw();
     for (String buttonKey : buttons.keySet()){
      buttons.get(buttonKey).draw(); 
@@ -242,6 +266,13 @@ void draw(){
      handleEnemyTurn(); 
     }
   }
+  else if (gameState.equals("reward")){
+    image(rewardPane, 250, 150, rewardPane.width * globalTextureMultiplier, rewardPane.height * globalTextureMultiplier);
+    for (ButtonWithText b : cardButtons){
+      b.draw();
+    }
+    
+  }
 }
 
 
@@ -273,10 +304,7 @@ void addDamageNumber(Entity target, int amount){
 }
 
 void handleActions(Entity source, Entity target, ArrayList<Action> actions){
-  //not even close to working, only handles player actions, and barely.
   for (Action action : actions){
-    println(action.getType());
-    println(action.getAmount());
       switch (action.getType()){
        case "a":
          if (action.getTarget()){

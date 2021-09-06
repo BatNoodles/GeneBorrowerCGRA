@@ -10,6 +10,11 @@ class ButtonWithText extends Button{
  
  public void draw(){
   super.draw();
-  text(this.text, this.x, this.y, this.sprites[0].width * this.textureMult, this.sprites[0].height);
+  fill(0);
+  textSize(50);
+  text(this.text, this.x, this.y, this.sprites[0].width * this.textureMult, this.sprites[0].height * this.textureMult);
+ }
+ public String getCard(){
+  return this.card; 
  }
 }
