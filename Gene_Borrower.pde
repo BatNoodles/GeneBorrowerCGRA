@@ -267,6 +267,7 @@ void draw(){
     }
   }
   else if (gameState.equals("reward")){
+    handleMouse();
     image(rewardPane, 250, 150, rewardPane.width * globalTextureMultiplier, rewardPane.height * globalTextureMultiplier);
     for (ButtonWithText b : cardButtons){
       b.draw();
@@ -470,15 +471,30 @@ void handleMouseTarget(){
   }
 }
 
+void handleMouseRewards(){
+  for (ButtonWithText b : cardButtons){
+    if (b.checkInside(mouseX, mouseY)){
+      
+      PImage cardImage = cardSet.get(b.getCard()).getImage();
+      image(cardImage, 800, 150, cardImage.width * 2, cardImage.height * 2);
+    }
+  }
+}
+
 void handleMouse(){ //handles the mouse and dragging of cards
 handleButtons();
+if (gameState.equals("battle")){
 if (playerTurn){
-   if (mouseMode == "card"){
+   if (mouseMode.equals("card")){
     handleMouseCard(); 
    }
-   else if (mouseMode == "target"){
+   else if (mouseMode.equals("target")){
       handleMouseTarget();
    }
+}
+}
+else if (gameState.equals("reward")){
+handleMouseRewards();
 }
 }
 
