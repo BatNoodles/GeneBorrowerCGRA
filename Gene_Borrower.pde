@@ -181,6 +181,7 @@ ArrayList<EnemyAction> actionQueue;
 final int enemyDelay = 125;
 final int actionDelay = 75;
 int enemyTurnDelay;
+int enemyTurnFinalDelay;
 
 boolean playerTurn;
 
@@ -268,6 +269,9 @@ void draw(){
   else if (gameState.equals("reward")){
     handleMouse();
     image(rewardPane, 250, 150, rewardPane.width * globalTextureMultiplier, rewardPane.height * globalTextureMultiplier);
+    fill(0);
+    textSize(50);
+    text("Borrow a gene", 298, 198, rewardPane.width * globalTextureMultiplier - 96, 54);
     for (ButtonWithText b : cardButtons){
       b.draw();
     }
@@ -284,12 +288,15 @@ void handleEnemyTurn(){
   aList.add(a);
  handleActions(a.getEnemy(), player, aList);
  if (actionQueue.isEmpty()){
+      if (enemyTurnFinalDelay == 0){
       playerTurn = true;
       drawToLimit();
       turnBanner.setText("Your Turn");
       turnBanner.setFramesLeft(155);
       player.clearBlock();
       return;
+      }
+      enemyTurnFinalDelay--;
     }
  enemyTurnDelay = actionQueue.get(0).getDelay();
   }
@@ -371,6 +378,7 @@ void drawToLimit(){ //draws up to the hand limit
 
 void setupEnemyActions(){
   enemyTurnDelay = 325;
+  enemyTurnFinalDelay = 150;
   for (Enemy e : enemies){
    e.clearBlock();
    EnemyActionGroup g = e.replaceAction();
