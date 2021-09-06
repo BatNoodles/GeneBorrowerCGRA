@@ -1,13 +1,13 @@
 class Button{
- private String name;
- private PImage spritesheet;
- private int x;
- private int y;
- private boolean pressed;
- private PImage[] sprites;
- private int textureMult;
+ protected String name;
+ protected PImage spritesheet;
+ protected int x;
+ protected int y;
+ protected boolean pressed;
+ protected PImage[] sprites;
+ protected int textureMult;
  
- private int buttonWidth, buttonHeight;
+ protected int buttonWidth, buttonHeight;
  
  public Button(PImage spritesheet, int x, int y, int textureMult, String name){
   this.pressed = false;
