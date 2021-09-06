@@ -97,7 +97,6 @@ void setupBattle(){
   for (int i = 0; i < cardRewardCount; i++){
 
     String card = possibleCards.remove((int)random(0, possibleCards.size()));
-    println(card);
     ButtonWithText b = new ButtonWithText(cardRewardButtonImage, 298, 
     (int)(300 + i * cardRewardButtonImage.height * globalTextureMultiplier * 1.2), 
     globalTextureMultiplier, "cardRewardButton", card, cardSet.get(card).getName());
