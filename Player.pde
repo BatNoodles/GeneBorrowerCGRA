@@ -38,6 +38,8 @@ public class Player extends Entity{
    return this.energy;  
  }
  
- 
+ public void addCard(Card c){
+   this.deck.add(c);
+ }
  
 }

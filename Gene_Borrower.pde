@@ -281,13 +281,7 @@ void draw(){
 
 
 void handleEnemyTurn(){
-  if (enemyTurnDelay == 0){
-    
-   EnemyAction a = actionQueue.remove(0);
-   ArrayList<Action> aList = new ArrayList<Action>();
-  aList.add(a);
- handleActions(a.getEnemy(), player, aList);
- if (actionQueue.isEmpty()){
+  if (actionQueue.isEmpty()){
       if (enemyTurnFinalDelay == 0){
       playerTurn = true;
       drawToLimit();
@@ -298,6 +292,13 @@ void handleEnemyTurn(){
       }
       enemyTurnFinalDelay--;
     }
+  else if (enemyTurnDelay == 0){
+    
+   EnemyAction a = actionQueue.remove(0);
+   ArrayList<Action> aList = new ArrayList<Action>();
+  aList.add(a);
+ handleActions(a.getEnemy(), player, aList);
+ if (actionQueue.isEmpty()) return;
  enemyTurnDelay = actionQueue.get(0).getDelay();
   }
   enemyTurnDelay--;
@@ -398,24 +399,37 @@ void setupEnemyActions(){
   
 }
 
-void doButtonActions(String buttonName){
+void doButtonActions(Button b){
+  String buttonName = b.getName();
   switch(buttonName){
    case "endTurn":
-     if (playerTurn){
+     if (playerTurn && gameState.equals("battle")){
       playerTurn = false; 
       turnBanner.setText("Enemy Turn");
       turnBanner.setFramesLeft(155);
       turnBanner.draw(width/2, (int)(height * 0.3), 60);
       setupEnemyActions();
      }
+    break;
+  case "cardRewardButton":
+    if (gameState.equals("reward")){
+      assert(b instanceof ButtonWithText) : "A reward button should always be an instance of a ButtonWithText";
+      ButtonWithText bText = (ButtonWithText)b;
+      Card reward = cardSet.get(bText.getCard());
+      player.addCard(new Card(reward));
+      setupBattle();
+    }
+
   }
 }
 
 void handleButtons(){
   
   if (mousePressed && pressedButton == null && selectedCard == null){
-   
-   for (Button button : buttons.values()){
+   ArrayList<Button> allButtons = new ArrayList<Button>();
+   allButtons.addAll(buttons.values());
+   allButtons.addAll(cardButtons);
+   for (Button button : allButtons){
       
     if (button.checkInside(mouseX, mouseY)){
      button.press();
@@ -426,7 +440,7 @@ void handleButtons(){
   else if(pressedButton != null && !mousePressed){
     pressedButton.depress();
    if (pressedButton.checkInside(mouseX, mouseY)){
-     doButtonActions(pressedButton.getName());
+     doButtonActions(pressedButton);
    }
    pressedButton = null;
   }
