@@ -257,7 +257,7 @@ void draw(){
       }
       fill(0,255);
     drawHand();
-    energyCounter.draw(50,800, player.getEnergy());
+    energyCounter.draw(50,720, player.getEnergy());
     turnBanner.draw(width/2, (int)(height * 0.3), 60);
     handleMouse();
     if (!playerTurn){
@@ -283,6 +283,7 @@ void handleEnemyTurn(){
       if (enemyTurnFinalDelay == 0){
       playerTurn = true;
       drawToLimit();
+      player.refreshEnergy();
       turnBanner.setText("Your Turn");
       turnBanner.setFramesLeft(155);
       player.clearBlock();

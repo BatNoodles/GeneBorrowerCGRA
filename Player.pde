@@ -38,6 +38,10 @@ public class Player extends Entity{
    return this.energy;  
  }
  
+public void refreshEnergy(){
+  this.energy = this.maxEnergy;
+}
+
 public void pay(int amount){
   this.energy -= amount;
 }
