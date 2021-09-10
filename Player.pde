@@ -38,6 +38,10 @@ public class Player extends Entity{
    return this.energy;  
  }
  
+public void pay(int amount){
+  this.energy -= amount;
+}
+
  public void addCard(Card c){
    this.deck.add(c);
  }

@@ -23,8 +23,8 @@ void setup(){
 
   turnBanner = new TextWithBackground("Your Turn", "sprites/turnSign.png", globalTextureMultiplier);
   turnBanner.setFramesLeft(300);
-  energyCounter = new TextWithBackground("3", energyImageName, globalTextureMultiplier);
-  energyCounter.setFramesLeft(-1);
+  energyCounter = new SpriteSheet(loadImage(energyImageName), 4, globalTextureMultiplier);
+
   enemyMap = new HashMap<String, Enemy>(); //storing all the different kinds of enemies
   
   cardSet = new HashMap<String, Card>(); 
@@ -61,7 +61,6 @@ void setup(){
   
  
   //TODO but not for a long time: add sprite sheets and animations (easier said than done)
-  
   
   
   
@@ -190,8 +189,8 @@ ArrayList<FadingText> damageNumbers;
 Button pressedButton;
 
 TextWithBackground turnBanner;
-TextWithBackground energyCounter;
-final String energyImageName = "sprites/helixEnergy.png";
+SpriteSheet energyCounter;
+final String energyImageName = "sprites/energySheet.png";
 
 String gameState;
 
@@ -258,8 +257,7 @@ void draw(){
       }
       fill(0,255);
     drawHand();
-    energyCounter.setText(Integer.toString(player.getEnergy()));
-    energyCounter.draw(50,800, 80);
+    energyCounter.draw(50,800, player.getEnergy());
     turnBanner.draw(width/2, (int)(height * 0.3), 60);
     handleMouse();
     if (!playerTurn){
@@ -343,6 +341,7 @@ void playCard(){
   }
   else{
   hand.remove(selectedCard);
+  player.pay(selectedCard.getCost());
   handleActions(player, null, selectedCard.getActions());
   discard.add(selectedCard);
   selectedCard = null;
