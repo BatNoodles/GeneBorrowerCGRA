@@ -336,6 +336,10 @@ void handleActions(Entity source, Entity target, ArrayList<Action> actions){
 
 
 void playCard(){
+  if (selectedCard.getCost() > player.getEnergy()){
+    selectedCard = null;
+    return;
+  }
   if (selectedCard.getTargets()){
    mouseMode = "target"; 
   }
@@ -344,7 +348,7 @@ void playCard(){
   player.pay(selectedCard.getCost());
   handleActions(player, null, selectedCard.getActions());
   discard.add(selectedCard);
-  selectedCard = null;
+    selectedCard = null;
  }
 }
 
@@ -478,10 +482,11 @@ void handleMouseTarget(){
    x = width - enemyLeft - (enemyPadding + enemy.getWidth())*(enemies.size() - i);
    y = 200;
     if (mouseX > x && mouseX < x + enemy.getWidth() && mouseY > y && mouseY < y + enemy.getHeight()){
+      player.pay(selectedCard.getCost());
       hand.remove(selectedCard);
       handleActions(player, enemy, selectedCard.getActions());
       discard.add(selectedCard);
-      selectedCard = null;
+    selectedCard = null;
       mouseMode = "card";
       return;
     }
