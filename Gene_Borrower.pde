@@ -22,7 +22,7 @@ void setup(){
   turnBanner.setFramesLeft(300);
   energyCounter = new SpriteSheet(loadImage(energyImageName), 4, globalTextureMultiplier);
 
-  enemyMap = new HashMap<String, Enemy>(); //storing all the different kinds of enemies
+  enemySet = new ArrayList<Enemy>(); //storing all the different kinds of enemies
   
   cardSet = new HashMap<String, Card>(); 
   //set of all the cards in the game, so they can be accessed at runtime
@@ -53,7 +53,7 @@ void setup(){
   
   //TODO read all enemies from the enemy folder
   
-  enemyMap.put("Kobold",new Enemy(loadStrings("enemyData/kobold.txt"), "enemySprites/kobold.png", globalTextureMultiplier, dropShadow, blockImage, 0, 0));
+  enemySet.add(new Enemy(loadStrings("enemyData/kobold.txt"), "enemySprites/kobold.png", globalTextureMultiplier, dropShadow, blockImage, 0, 0));
   
   
  
@@ -62,7 +62,7 @@ void setup(){
   mapTile = loadImage(mapTileName);
   finishedNode = loadImage("sprites/finishedNode.png");
   setupMap();
-  setupBattle();
+  setupBattle(currentNode.getEnemyCount());
   
   
 }
@@ -78,7 +78,7 @@ void setupMap(){
 }
 
 MapNode recursiveMapNode(int depth, int doubleCount,  int maxWidth, float doublePathChance, int enemyIncreaseAmount, int x, int y, int maxDepth){
-  MapNode node = new MapNode(battleNodeImage, x, y, globalTextureMultiplier, "mapNode", (int)random(depth) % enemyIncreaseAmount);
+  MapNode node = new MapNode(battleNodeImage, x, y, globalTextureMultiplier, "mapNode", (int)random(depth) % enemyIncreaseAmount + 1);
   depth++;
   if (depth < maxDepth){
     if (random(1) < doublePathChance && doubleCount < 3){
@@ -97,8 +97,9 @@ MapNode recursiveMapNode(int depth, int doubleCount,  int maxWidth, float double
 }
 
 
-void setupBattle(){
+void setupBattle(int enemyCount){
    //code that is used to reset the battle
+   player.refreshEnergy();
   damageNumbers = new ArrayList<FadingText>();
   mouseMode = "card";
   actionQueue = new ArrayList<EnemyAction>();
@@ -106,8 +107,9 @@ void setupBattle(){
   discard = new ArrayList<Card>();
   enemies = new ArrayList<Enemy>();
   playerTurn = true;
-  enemies.add(enemyMap.get("Kobold").clone());
-  enemies.add(enemyMap.get("Kobold").clone());
+  for (int i = 0; i < enemyCount; i++){
+    enemies.add(enemySet.get((int)random(enemySet.size())).clone());
+  }
   for (int i = enemies.size()-1; i >= 0; i--){ //draw enemies
      Enemy enemy = enemies.get(i);
      int x = width - enemyLeft - (enemyPadding + enemy.getWidth())*(enemies.size() - i);
@@ -177,7 +179,7 @@ int selectXOffset, selectYOffset;
 
 Player player;
 
-HashMap<String, Enemy> enemyMap;
+ArrayList<Enemy> enemySet;
 
 ArrayList<EnemyActionGroup> actionGroupQueue;
 
@@ -327,6 +329,7 @@ void draw(){
         line(node.getX() + node.getWidth()/2, node.getY(), child.getX() + child.getWidth()/2, child.getY() + child.getHeight());
       }
     }
+    handleMouse();
   }
 }
 
@@ -477,19 +480,31 @@ void doButtonActions(Button b){
       currentNode.setVisited();
       gameState = "map";
     }
-
+    break;
+  case "mapNode":
+    if (gameState.equals("map")){
+      println("jesus");
+      assert (b instanceof MapNode) : "A map node should always be an instance of a MapNode. I'm not sure how this could have happened";
+      MapNode n = (MapNode)b;
+      if (currentNode.getChildren().contains(n)){
+        currentNode = n;
+        currentNode.setVisited();
+        setupBattle(n.getEnemyCount());
+      }
+    break;
+    }
   }
 }
 
 void handleButtons(){
-  
   if (mousePressed && pressedButton == null && selectedCard == null){
    ArrayList<Button> allButtons = new ArrayList<Button>();
    allButtons.addAll(buttons.values());
    allButtons.addAll(cardButtons);
+   allButtons.addAll(allMapNodes);
    for (Button button : allButtons){
-      
     if (button.checkInside(mouseX, mouseY)){
+    
      button.press();
      pressedButton = button;
     }

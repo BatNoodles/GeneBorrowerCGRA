@@ -17,9 +17,6 @@ class MapNode extends Button{
         return this.childNodes;
     }
 
-    public void draw(){
-        super.draw();
-    }
 
     public void center(){
         this.x -= this.width/2;
@@ -27,6 +24,10 @@ class MapNode extends Button{
 
     public boolean isVisited(){
         return this.visited;
+    }
+
+    public int getEnemyCount(){
+        return this.enemyCount;
     }
 
     public void setVisited(){
