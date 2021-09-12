@@ -60,7 +60,7 @@ void setup(){
   //TODO but not for a long time: add sprite sheets and animations (easier said than done)
   
   mapTile = loadImage(mapTileName);
-  
+  finishedNode = loadImage("sprites/finishedNode.png");
   setupMap();
   setupBattle();
   
@@ -74,7 +74,7 @@ void setupMap(){
   float doublePathChance = 0.5;
   int enemyIncreaseAmount = 2;
   rootNode = recursiveMapNode(0, 0, maxWidth, doublePathChance, enemyIncreaseAmount, width/2, height - 150, maxDepth);
-
+  currentNode = rootNode;
 }
 
 MapNode recursiveMapNode(int depth, int doubleCount,  int maxWidth, float doublePathChance, int enemyIncreaseAmount, int x, int y, int maxDepth){
@@ -236,6 +236,7 @@ MapNode rootNode;
 MapNode currentNode;
 PImage battleNodeImage;
 ArrayList<MapNode> allMapNodes;
+PImage finishedNode;
 void draw(){
   background(255);
   for (int y = backgroundHeight - repeatingHeight; y < height; y+= repeatingHeight){ //draw repeating background
@@ -319,6 +320,9 @@ void draw(){
     stroke(0);
     for (MapNode node : allMapNodes){
       node.draw();
+      if (node.isVisited()){
+        image(finishedNode, node.getX(), node.getY(), finishedNode.width * globalTextureMultiplier, finishedNode.height * globalTextureMultiplier);
+      }
       for (MapNode child : node.getChildren()){
         line(node.getX() + node.getWidth()/2, node.getY(), child.getX() + child.getWidth()/2, child.getY() + child.getHeight());
       }
@@ -470,6 +474,7 @@ void doButtonActions(Button b){
       ButtonWithText bText = (ButtonWithText)b;
       Card reward = cardSet.get(bText.getCard());
       player.addCard(new Card(reward));
+      currentNode.setVisited();
       gameState = "map";
     }
 
@@ -594,7 +599,9 @@ void setSelectedCard(){ //gets the card that is selected from the hand
    return;
   }
   int index = (int)Math.floor(localX / (cardWidth + handPadding));
-  
+  if (index >= hand.size()){
+    return;
+  }
   selectedCard = hand.get(index);
   selectXOffset = cardXOffset;
   selectYOffset = mouseY - handTop;

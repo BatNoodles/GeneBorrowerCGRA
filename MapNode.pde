@@ -25,5 +25,11 @@ class MapNode extends Button{
         this.x -= this.width/2;
     }
 
+    public boolean isVisited(){
+        return this.visited;
+    }
 
+    public void setVisited(){
+    this.visited = true;
+    }
 }
