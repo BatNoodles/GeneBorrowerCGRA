@@ -6,7 +6,8 @@ class Button{
  protected boolean pressed;
  protected PImage[] sprites;
  protected int textureMult;
- 
+ protected int height;
+ protected int width;
  protected int buttonWidth, buttonHeight;
  
  public Button(PImage spritesheet, int x, int y, int textureMult, String name){
@@ -16,7 +17,9 @@ class Button{
   this.y = y;
   this.textureMult = textureMult;
   int w = spritesheet.width;
+  this.width = w * textureMult / 2;
   int h = spritesheet.height;
+  this.height = h * textureMult;
   this.name = name;
   sprites = new PImage[]{spritesheet.get(0,0, w/2, h), spritesheet.get(w/2, 0, w, h)};
   this.buttonWidth = sprites[0].width;
@@ -49,4 +52,18 @@ class Button{
   return this.name; 
  }
  
+public int getHeight(){
+  return this.height;
+}
+
+public int getWidth(){
+  return this.width;
+}
+
+public int getX(){
+  return this.x;
+}
+public int getY(){
+  return this.y;
+}
 }

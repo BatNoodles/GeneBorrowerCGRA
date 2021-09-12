@@ -1,6 +1,3 @@
-//todo make an abstract class for entity that can be used for both player and enemy. This would allow the handleAction code to be a lot simpler.
-
-
 void setup(){
   
   textFont(createFont("fonts/VT323-Regular.ttf", 30));
@@ -64,10 +61,39 @@ void setup(){
   
   mapTile = loadImage(mapTileName);
   
-  
+  setupMap();
   setupBattle();
   
   
+}
+void setupMap(){
+  battleNodeImage = loadImage("sprites/battleIconSheet.png");
+  allMapNodes = new ArrayList<MapNode>();
+  int maxWidth = 410;
+  int maxDepth = 7;
+  float doublePathChance = 0.5;
+  int enemyIncreaseAmount = 2;
+  rootNode = recursiveMapNode(0, 0, maxWidth, doublePathChance, enemyIncreaseAmount, width/2, height - 150, maxDepth);
+
+}
+
+MapNode recursiveMapNode(int depth, int doubleCount,  int maxWidth, float doublePathChance, int enemyIncreaseAmount, int x, int y, int maxDepth){
+  MapNode node = new MapNode(battleNodeImage, x, y, globalTextureMultiplier, "mapNode", (int)random(depth) % enemyIncreaseAmount);
+  depth++;
+  if (depth < maxDepth){
+    if (random(1) < doublePathChance && doubleCount < 3){
+      doubleCount ++;
+      node.addChild(recursiveMapNode(depth, doubleCount,  maxWidth, doublePathChance, enemyIncreaseAmount, (int)(x - maxWidth/doubleCount - 10), y - 150, maxDepth));
+      node.addChild(recursiveMapNode(depth, doubleCount, maxWidth, doublePathChance, enemyIncreaseAmount, (int)(x + maxWidth/doubleCount + 10), y - 150, maxDepth));
+
+    }
+    else{
+      node.addChild(recursiveMapNode(depth, doubleCount, maxWidth, doublePathChance, enemyIncreaseAmount, x, y - 150, maxDepth));
+    }
+  }
+  node.center();
+  allMapNodes.add(node);
+  return node;
 }
 
 
@@ -203,6 +229,13 @@ PImage mapTile;
 final String mapTileName = "sprites/mapTile.png";
 
 final int cardRewardCount = 2;
+
+
+
+MapNode rootNode;
+MapNode currentNode;
+PImage battleNodeImage;
+ArrayList<MapNode> allMapNodes;
 void draw(){
   background(255);
   for (int y = backgroundHeight - repeatingHeight; y < height; y+= repeatingHeight){ //draw repeating background
@@ -282,6 +315,13 @@ void draw(){
   else if (gameState.equals("map")){
     for (int y = 0; y < height; y+= mapTile.height * globalTextureMultiplier){
       image(mapTile, 0, y, mapTile.width * globalTextureMultiplier, mapTile.height * globalTextureMultiplier);
+    }
+    stroke(0);
+    for (MapNode node : allMapNodes){
+      node.draw();
+      for (MapNode child : node.getChildren()){
+        line(node.getX() + node.getWidth()/2, node.getY(), child.getX() + child.getWidth()/2, child.getY() + child.getHeight());
+      }
     }
   }
 }
