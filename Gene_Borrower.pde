@@ -62,6 +62,7 @@ void setup(){
  
   //TODO but not for a long time: add sprite sheets and animations (easier said than done)
   
+  mapTile = loadImage(mapTileName);
   
   
   setupBattle();
@@ -198,6 +199,9 @@ PImage cardRewardButtonImage;
 PImage rewardPane;
 ArrayList<ButtonWithText> cardButtons;
 
+PImage mapTile;
+final String mapTileName = "sprites/mapTile.png";
+
 final int cardRewardCount = 2;
 void draw(){
   background(255);
@@ -274,6 +278,11 @@ void draw(){
       b.draw();
     }
     
+  }
+  else if (gameState.equals("map")){
+    for (int y = 0; y < height; y+= mapTile.height * globalTextureMultiplier){
+      image(mapTile, 0, y, mapTile.width * globalTextureMultiplier, mapTile.height * globalTextureMultiplier);
+    }
   }
 }
 
@@ -421,7 +430,7 @@ void doButtonActions(Button b){
       ButtonWithText bText = (ButtonWithText)b;
       Card reward = cardSet.get(bText.getCard());
       player.addCard(new Card(reward));
-      setupBattle();
+      gameState = "map";
     }
 
   }
