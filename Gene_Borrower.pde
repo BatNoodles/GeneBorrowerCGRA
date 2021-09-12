@@ -100,6 +100,7 @@ MapNode recursiveMapNode(int depth, int doubleCount,  int maxWidth, float double
 void setupBattle(int enemyCount){
    //code that is used to reset the battle
    player.refreshEnergy();
+   player.clearBlock();
   damageNumbers = new ArrayList<FadingText>();
   mouseMode = "card";
   actionQueue = new ArrayList<EnemyAction>();
