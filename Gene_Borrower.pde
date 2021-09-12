@@ -72,13 +72,13 @@ void setupMap(){
   int maxWidth = 410;
   int maxDepth = 7;
   float doublePathChance = 0.5;
-  int enemyIncreaseAmount = 2;
+  int enemyIncreaseAmount = 3;
   rootNode = recursiveMapNode(0, 0, maxWidth, doublePathChance, enemyIncreaseAmount, width/2, height - 150, maxDepth);
   currentNode = rootNode;
 }
 
 MapNode recursiveMapNode(int depth, int doubleCount,  int maxWidth, float doublePathChance, int enemyIncreaseAmount, int x, int y, int maxDepth){
-  MapNode node = new MapNode(battleNodeImage, x, y, globalTextureMultiplier, "mapNode", (int)random(depth) % enemyIncreaseAmount + 1);
+  MapNode node = new MapNode(battleNodeImage, x, y, globalTextureMultiplier, "mapNode", floor(depth / enemyIncreaseAmount) + int(random(1)) + 1);
   depth++;
   if (depth < maxDepth){
     if (random(1) < doublePathChance && doubleCount < 3){
@@ -500,8 +500,12 @@ void handleButtons(){
   if (mousePressed && pressedButton == null && selectedCard == null){
    ArrayList<Button> allButtons = new ArrayList<Button>();
    allButtons.addAll(buttons.values());
-   allButtons.addAll(cardButtons);
-   allButtons.addAll(allMapNodes);
+   if (gameState.equals("reward")){
+    allButtons.addAll(cardButtons);
+   }
+   if (gameState.equals("map")){
+    allButtons.addAll(allMapNodes);
+   }
    for (Button button : allButtons){
     if (button.checkInside(mouseX, mouseY)){
     
