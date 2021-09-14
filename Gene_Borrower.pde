@@ -484,7 +484,6 @@ void doButtonActions(Button b){
     break;
   case "mapNode":
     if (gameState.equals("map")){
-      println("jesus");
       assert (b instanceof MapNode) : "A map node should always be an instance of a MapNode. I'm not sure how this could have happened";
       MapNode n = (MapNode)b;
       if (currentNode.getChildren().contains(n)){
