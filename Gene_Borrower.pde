@@ -61,6 +61,7 @@ void setup(){
   
   mapTile = loadImage(mapTileName);
   finishedNode = loadImage("sprites/finishedNode.png");
+  campfireImage = loadImage(campfireImageName);
   setupMap();
   setupBattle(currentNode.getEnemyCount());
   
@@ -250,6 +251,9 @@ ArrayList<MapNode> allMapNodes;
 PImage finishedNode;
 PImage restNodeImage;
 
+PImage campfireImage;
+final String campfireImageName = "sprites/campfire.png";
+
 /***
 GAME STATES:
 battle : in a battle, can play cards, click next turn. Turns rotate between player and enemy
@@ -259,6 +263,8 @@ reward : choosing which card to add to the deck after winning a battle
 Player can only click on one of the card buttons to add that card to their deck
 
 map : player is choosing where to go next. can only click on one of the map nodes, and only map nodes connected to the current node should do anything
+
+rest : player is at rest spot, heal
 
 
 ***/
@@ -354,6 +360,11 @@ void draw(){
       }
     }
     handleMouse();
+  }
+  else if (gameState.equals("rest")){
+    player.draw();
+    image(campfireImage, 850, 375, campfireImage.width * globalTextureMultiplier, campfireImage.height * globalTextureMultiplier);
+
   }
 }
 
@@ -512,7 +523,12 @@ void doButtonActions(Button b){
       if (currentNode.getChildren().contains(n)){
         currentNode = n;
         currentNode.setVisited();
-        setupBattle(n.getEnemyCount());
+        if (n.getRest()){
+          gameState = "rest";
+        }
+        else{
+        setupBattle(n.getEnemyCount());          
+        }
       }
     break;
     }

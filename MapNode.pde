@@ -35,4 +35,9 @@ class MapNode extends Button{
     public void setVisited(){
     this.visited = true;
     }
+
+
+    public boolean getRest(){
+        return this.isRestNode;
+    }
 }
