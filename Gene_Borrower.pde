@@ -67,28 +67,36 @@ void setup(){
   
 }
 void setupMap(){
+  restNodeImage = loadImage("sprites/restIconSheet.png");
   battleNodeImage = loadImage("sprites/battleIconSheet.png");
   allMapNodes = new ArrayList<MapNode>();
   int maxWidth = 410;
   int maxDepth = 7;
   float doublePathChance = 0.5;
   int enemyIncreaseAmount = 3;
-  rootNode = recursiveMapNode(0, 0, maxWidth, doublePathChance, enemyIncreaseAmount, width/2, height - 150, maxDepth);
+  float restChance = 0.35;
+  rootNode = recursiveMapNode(0, 0, maxWidth, doublePathChance, enemyIncreaseAmount, width/2, height - 150, maxDepth, restChance, restNodeImage);
   currentNode = rootNode;
 }
 
-MapNode recursiveMapNode(int depth, int doubleCount,  int maxWidth, float doublePathChance, int enemyIncreaseAmount, int x, int y, int maxDepth){
-  MapNode node = new MapNode(battleNodeImage, x, y, globalTextureMultiplier, "mapNode", floor(depth / enemyIncreaseAmount) + int(random(1)) + 1);
+MapNode recursiveMapNode(int depth, int doubleCount,  int maxWidth, float doublePathChance, int enemyIncreaseAmount, int x, int y, int maxDepth, float restChance, PImage restNodeImage){
+  MapNode node;
+  if(random(1) < restChance && (depth == 2 || depth == 4)){
+    node = new MapNode(restNodeImage, x, y, globalTextureMultiplier, "mapNode", 0, true);
+  }
+  else{
+    node = new MapNode(battleNodeImage, x, y, globalTextureMultiplier, "mapNode", floor(depth / enemyIncreaseAmount) + int(random(2)) + 1, false);
+  }
   depth++;
   if (depth < maxDepth){
     if (random(1) < doublePathChance && doubleCount < 3){
       doubleCount ++;
-      node.addChild(recursiveMapNode(depth, doubleCount,  maxWidth, doublePathChance, enemyIncreaseAmount, (int)(x - maxWidth/doubleCount - 10), y - 150, maxDepth));
-      node.addChild(recursiveMapNode(depth, doubleCount, maxWidth, doublePathChance, enemyIncreaseAmount, (int)(x + maxWidth/doubleCount + 10), y - 150, maxDepth));
+      node.addChild(recursiveMapNode(depth, doubleCount,  maxWidth, doublePathChance, enemyIncreaseAmount, (int)(x - maxWidth/doubleCount - 10), y - 150, maxDepth, restChance, restNodeImage));
+      node.addChild(recursiveMapNode(depth, doubleCount, maxWidth, doublePathChance, enemyIncreaseAmount, (int)(x + maxWidth/doubleCount + 10), y - 150, maxDepth, restChance, restNodeImage));
 
     }
     else{
-      node.addChild(recursiveMapNode(depth, doubleCount, maxWidth, doublePathChance, enemyIncreaseAmount, x, y - 150, maxDepth));
+      node.addChild(recursiveMapNode(depth, doubleCount, maxWidth, doublePathChance, enemyIncreaseAmount, x, y - 150, maxDepth, restChance, restNodeImage));
     }
   }
   node.center();
@@ -240,6 +248,21 @@ MapNode currentNode;
 PImage battleNodeImage;
 ArrayList<MapNode> allMapNodes;
 PImage finishedNode;
+PImage restNodeImage;
+
+/***
+GAME STATES:
+battle : in a battle, can play cards, click next turn. Turns rotate between player and enemy
+Player cannot interact with anything until the enemy turn is done
+
+reward : choosing which card to add to the deck after winning a battle
+Player can only click on one of the card buttons to add that card to their deck
+
+map : player is choosing where to go next. can only click on one of the map nodes, and only map nodes connected to the current node should do anything
+
+
+***/
+
 void draw(){
   background(255);
   for (int y = backgroundHeight - repeatingHeight; y < height; y+= repeatingHeight){ //draw repeating background
