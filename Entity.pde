@@ -87,7 +87,12 @@ abstract class Entity{
   return this.health; 
  }
   
-  
+public void heal(int amount){
+  assert amount > 0: "Healing cannot be negative";
+  this.health += amount;
+  this.health = min(this.health, this.maxHealth);
+}  
+
    public void draw(){
    
    noStroke();   
