@@ -65,7 +65,6 @@ void setup(){
   setupMap();
   setupBattle(currentNode.getEnemyCount());
   
-  
 }
 void setupMap(){
   restNodeImage = loadImage("sprites/restIconSheet.png");
@@ -99,7 +98,7 @@ MapNode recursiveMapNode(int depth, int doubleCount,  int maxWidth, float double
     else{
       node.addChild(recursiveMapNode(depth, doubleCount, maxWidth, doublePathChance, enemyIncreaseAmount, x, y - 150, maxDepth, restChance, restNodeImage));
     }
-  }
+  } 
   node.center();
   allMapNodes.add(node);
   return node;
@@ -143,6 +142,7 @@ void setupBattle(int enemyCount){
   setupDeck();
   shuffleDeck();
   drawToLimit();
+
   gameState = "battle";
 }
 
@@ -254,6 +254,12 @@ PImage restNodeImage;
 PImage campfireImage;
 final String campfireImageName = "sprites/campfire.png";
 
+
+final int healMax = 20;
+int amountHealed;
+final int healFrameDelay = 30;
+int healFramesLeft = 0;
+
 /***
 GAME STATES:
 battle : in a battle, can play cards, click next turn. Turns rotate between player and enemy
@@ -364,7 +370,16 @@ void draw(){
   else if (gameState.equals("rest")){
     player.draw();
     image(campfireImage, 850, 375, campfireImage.width * globalTextureMultiplier, campfireImage.height * globalTextureMultiplier);
-
+    if (amountHealed < healMax && !player.isMaxHealth()){
+      if (healFramesLeft == 0){
+        healFramesLeft = healFrameDelay;
+        player.heal(1);
+        amountHealed++;
+      }
+      else{
+        healFramesLeft--;
+      }
+    }
   }
 }
 
@@ -525,6 +540,7 @@ void doButtonActions(Button b){
         currentNode.setVisited();
         if (n.getRest()){
           gameState = "rest";
+          amountHealed = 0;
         }
         else{
         setupBattle(n.getEnemyCount());          

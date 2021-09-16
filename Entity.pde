@@ -87,6 +87,10 @@ abstract class Entity{
   return this.health; 
  }
   
+  public boolean isMaxHealth(){
+    return this.health == this.maxHealth;
+  }
+
 public void heal(int amount){
   assert amount > 0: "Healing cannot be negative";
   this.health += amount;
