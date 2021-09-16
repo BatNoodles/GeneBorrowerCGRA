@@ -59,6 +59,7 @@ void setup(){
  
   //TODO but not for a long time: add sprite sheets and animations (easier said than done)
   
+  restContinueButton = new ButtonWithText(cardRewardButtonImage, 750, 600, globalTextureMultiplier, "restContinue", "Continue", ""); //TODO make actualy spritesheet for continue button lol
   mapTile = loadImage(mapTileName);
   finishedNode = loadImage("sprites/finishedNode.png");
   campfireImage = loadImage(campfireImageName);
@@ -259,7 +260,8 @@ final int healMax = 20;
 int amountHealed;
 final int healFrameDelay = 30;
 int healFramesLeft = 0;
-
+ButtonWithText restContinueButton;
+boolean showRestContinue = false;
 /***
 GAME STATES:
 battle : in a battle, can play cards, click next turn. Turns rotate between player and enemy
@@ -287,6 +289,7 @@ void draw(){
   if (gameState.equals("battle")){
     if (enemies.size() == 0){
      gameState = "reward"; 
+     player.clearBlock();
     }
     
     
@@ -368,6 +371,7 @@ void draw(){
     handleMouse();
   }
   else if (gameState.equals("rest")){
+    handleMouse();
     player.draw();
     image(campfireImage, 850, 375, campfireImage.width * globalTextureMultiplier, campfireImage.height * globalTextureMultiplier);
     if (amountHealed < healMax && !player.isMaxHealth()){
@@ -379,6 +383,10 @@ void draw(){
       else{
         healFramesLeft--;
       }
+    }
+    else{
+      showRestContinue = true;
+      restContinueButton.draw();
     }
   }
 }
@@ -539,6 +547,7 @@ void doButtonActions(Button b){
         currentNode = n;
         currentNode.setVisited();
         if (n.getRest()){
+          showRestContinue = false;
           gameState = "rest";
           amountHealed = 0;
         }
@@ -546,8 +555,12 @@ void doButtonActions(Button b){
         setupBattle(n.getEnemyCount());          
         }
       }
-    break;
+    
     }
+    break;
+  case "restContinue":
+    gameState = "map";
+    currentNode.setVisited();
   }
 }
 
@@ -560,6 +573,9 @@ void handleButtons(){
    }
    if (gameState.equals("map")){
     allButtons.addAll(allMapNodes);
+   }
+   if (showRestContinue){
+     allButtons.add(restContinueButton);
    }
    for (Button button : allButtons){
     if (button.checkInside(mouseX, mouseY)){
