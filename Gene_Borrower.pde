@@ -720,8 +720,8 @@ void handleMouseTarget(){
   int x,y;
   for (int i = enemies.size()-1; i >= 0; i--){ //draw enemies
    Enemy enemy = enemies.get(i);
-   x = width - enemyLeft - (enemyPadding + enemy.getWidth())*(enemies.size() - i);
-   y = 200;
+   x = enemy.getX();
+   y = enemy.getY();
     if (mouseX > x && mouseX < x + enemy.getWidth() && mouseY > y && mouseY < y + enemy.getHeight()){
       player.pay(selectedCard.getCost());
       hand.remove(selectedCard);
