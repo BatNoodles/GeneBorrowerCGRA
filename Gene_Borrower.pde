@@ -5,6 +5,11 @@ MAP,
 REST
 }
 
+public enum Turn{
+  PLAYER,
+  DRAW,
+  ENEMY
+}
 
 void setup(){
   
@@ -125,7 +130,7 @@ void setupBattle(int enemyCount){
   hand = new ArrayList<Card>();
   discard = new ArrayList<Card>();
   enemies = new ArrayList<Enemy>();
-  playerTurn = true;
+  turnState = Turn.PLAYER;
 
   if (random(1) < sameEnemyChance){ //makes the battle a number of the same enemies
     int enemyIndex = (int)random(enemySet.size());
@@ -241,7 +246,7 @@ final int actionDelay = 75;
 int enemyTurnDelay;
 int enemyTurnFinalDelay;
 
-boolean playerTurn;
+Turn turnState;
 
 ArrayList<FadingText> damageNumbers;
 
@@ -330,7 +335,7 @@ void draw(){
      x = enemy.getX();
      y = enemy.getY();
      enemy.draw();
-     if (playerTurn){
+     if (turnState == Turn.PLAYER){
       enemy.drawNextAttack(); 
      }
       if (mouseMode == "target"){ //draws red targeting things
@@ -361,7 +366,7 @@ void draw(){
     energyCounter.draw(50,720, player.getEnergy());
     turnBanner.draw(width/2, (int)(height * 0.3), 60);
     handleMouse();
-    if (!playerTurn){
+    if (turnState == Turn.ENEMY){
      handleEnemyTurn(); 
     }
   }
@@ -417,7 +422,7 @@ void draw(){
 void handleEnemyTurn(){
   if (actionQueue.isEmpty()){
       if (enemyTurnFinalDelay == 0){
-      playerTurn = true;
+      turnState = Turn.PLAYER;
       player.refreshEnergy();
       turnBanner.setText("Your Turn");
       turnBanner.setFramesLeft(155);
@@ -451,9 +456,12 @@ void discard(int amount){
 
 }
 void addDamageNumber(Entity target, int amount){
-  int x = (int)random(target.getX(), target.getX() + target.getWidth());
+  addDamageNumber(target, Integer.toString(amount));
+}
+void addDamageNumber(Entity target, String text){
+int x = (int)random(target.getX(), target.getX() + target.getWidth());
   int y = (int)random(target.getY(), target.getY() + target.getHeight()/2);
-  damageNumbers.add(new FadingText(155, Integer.toString(amount),x,y));
+  damageNumbers.add(new FadingText(155, text,x,y));
 }
 
 void handleActions(Entity source, Entity target, ArrayList<Action> actions){
@@ -486,6 +494,7 @@ void handleActions(Entity source, Entity target, ArrayList<Action> actions){
           assert (source == player) : "Only the player can be affected by discard actions. Should this action have a target?";
         }
         discard(action.getAmount());
+        addDamageNumber(player, "Discarded " + action.getAmount());
         break;
 
       }
@@ -564,8 +573,8 @@ void doButtonActions(Button b){
   String buttonName = b.getName();
   switch(buttonName){
    case "endTurn":
-     if (playerTurn && gameState == State.BATTLE){
-      playerTurn = false; 
+     if (turnState == Turn.PLAYER && gameState == State.BATTLE){
+      turnState = Turn.ENEMY; 
       turnBanner.setText("Enemy Turn");
       turnBanner.setFramesLeft(155);
       turnBanner.draw(width/2, (int)(height * 0.3), 60);
@@ -698,7 +707,7 @@ void handleMouseRewards(){
 void handleMouse(){ //handles the mouse and dragging of cards
 handleButtons();
 if (gameState == State.BATTLE){
-if (playerTurn){
+if (turnState == Turn.PLAYER){
    if (mouseMode.equals("card")){
     handleMouseCard(); 
    }
