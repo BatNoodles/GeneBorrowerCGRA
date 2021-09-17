@@ -128,6 +128,7 @@ void setupBattle(int enemyCount){
   mouseMode = "card";
   actionQueue = new ArrayList<EnemyAction>();
   hand = new ArrayList<Card>();
+  cardsToBeDrawn = new ArrayList<Card>();
   discard = new ArrayList<Card>();
   enemies = new ArrayList<Enemy>();
   turnState = Turn.PLAYER;
@@ -166,7 +167,7 @@ for (int i = 0; i < enemyCount; i++){ //makes the battle a random collection of 
   }
   setupDeck();
   shuffleDeck();
-  drawToLimit();
+  setupHand();
 
   gameState = State.BATTLE;
 }
@@ -175,6 +176,7 @@ for (int i = 0; i < enemyCount; i++){ //makes the battle a random collection of 
 
 //hand and card stuff
 ArrayList<Card> hand;
+ArrayList<Card> cardsToBeDrawn;
 ArrayList<Card> deck;
 ArrayList<Card> discard;
 final int handLeft = 200; //setting up the hand
@@ -292,6 +294,9 @@ boolean showRestContinue = false;
 
 
 final float sameEnemyChance = 0.65;
+
+int drawAnimationTime;
+
 /***
 GAME STATES:
 battle : in a battle, can play cards, click next turn. Turns rotate between player and enemy
@@ -369,6 +374,9 @@ void draw(){
     energyCounter.draw(50,720, player.getEnergy());
     turnBanner.draw(width/2, (int)(height * 0.3), 60);
     handleMouse();
+    if (turnState ==  Turn.DRAW){
+      handleDrawAnimation();
+    }
     if (turnState == Turn.ENEMY){
      handleEnemyTurn(); 
     }
@@ -421,6 +429,28 @@ void draw(){
   }
 }
 
+
+void handleDrawAnimation(){
+  if (cardsToBeDrawn.size() == 0){
+    drawAnimationTime = 0;
+    turnState = Turn.ENEMY;
+    return;
+  }
+  for (int i = 0; i < cardsToBeDrawn.size(); i++){
+    Card c = cardsToBeDrawn.get(i);
+    image(c.getImage(), (i * 50) + drawAnimationTime * 10, handTop, cardWidth, cardHeight);
+  }
+  for (int i = cardsToBeDrawn.size()-1; i >= 0; i--){
+    int targetLeft = handLeft + ((cardsToBeDrawn.size() - i) + hand.size()) * (handPadding + cardWidth);
+    if ((i * 50) + drawAnimationTime * 20 > targetLeft){
+      hand.add(cardsToBeDrawn.remove(i));
+    }
+  }
+  
+  
+  drawAnimationTime++;
+
+}
 
 void handleEnemyTurn(){
   if (actionQueue.isEmpty()){
@@ -539,7 +569,18 @@ void setupDeck(){ //gets the deck from the player object
 
 
 void drawToLimit(){ //draws up to the hand limit
- while (hand.size() < drawLimit){
+ while (hand.size() + cardsToBeDrawn.size() < drawLimit){
+   if (deck.size() == 0){
+     deck.addAll(discard);
+     discard.clear();
+     shuffleDeck();
+   }
+  cardsToBeDrawn.add(deck.remove(0)); 
+ }
+}
+
+void setupHand(){
+   while (hand.size() < drawLimit){
    if (deck.size() == 0){
      deck.addAll(discard);
      discard.clear();
@@ -548,8 +589,6 @@ void drawToLimit(){ //draws up to the hand limit
   hand.add(deck.remove(0)); 
  }
 }
-
-
 void setupEnemyActions(){
   enemyTurnDelay = 325;
   enemyTurnFinalDelay = 150;
@@ -577,16 +616,17 @@ void doButtonActions(Button b){
   switch(buttonName){
    case "endTurn":
      if (turnState == Turn.PLAYER && gameState == State.BATTLE){
-      turnState = Turn.ENEMY; 
+      turnState = Turn.DRAW; 
       turnBanner.setText("Enemy Turn");
       turnBanner.setFramesLeft(155);
       turnBanner.draw(width/2, (int)(height * 0.3), 60);
+      
       drawToLimit();
       setupEnemyActions();
      }
     break;
   case "cardRewardButton":
-    if (gameState == State.BATTLE){
+    if (gameState == State.REWARD){
       assert(b instanceof ButtonWithText) : "A reward button should always be an instance of a ButtonWithText";
       ButtonWithText bText = (ButtonWithText)b;
       Card reward = cardSet.get(bText.getCard());
@@ -719,7 +759,7 @@ if (turnState == Turn.PLAYER){
    }
 }
 }
-else if (gameState == State.BATTLE){
+else if (gameState == State.REWARD){
 handleMouseRewards();
 }
 }
