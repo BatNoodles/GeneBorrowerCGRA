@@ -48,7 +48,6 @@ void setup(){
    String imageName = filename.replace(".txt", ".png");
    
    Card card = new Card(filename, imageName);
-   
    cardSet.put(card.getName(), card);
   }
   buttons = new HashMap<String, Button>();
@@ -527,7 +526,7 @@ void handleActions(Entity source, Entity target, ArrayList<Action> actions){
           assert (source == player) : "Only the player can be affected by discard actions. Should this action have a target?";
         }
         discard(action.getAmount());
-        addDamageNumber(player, "Discarded " + action.getAmount());
+        addDamageNumber(player, "Discarded " + min(action.getAmount(), hand.size()));
         break;
 
       }
