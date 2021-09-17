@@ -6,8 +6,8 @@ void setup(){
   discard = new ArrayList<Card>();
   dropShadow = loadImage(dropShadowTexture); //shadow texture used by all entities
   blockImage = loadImage(blockTexture);
- backgroundImage = loadImage(backgroundName); //loading backgrounds
- backgroundAdditionalImage = loadImage(backgroundDetail);  
+  backgroundImage = loadImage(backgroundName); //loading backgrounds
+  backgroundAdditionalImage = loadImage(backgroundDetail);  
  
   backgroundWidth = backgroundImage.width * globalTextureMultiplier;
   backgroundHeight = backgroundImage.height * globalTextureMultiplier;
@@ -54,6 +54,7 @@ void setup(){
   //TODO read all enemies from the enemy folder
   
   enemySet.add(new Enemy(loadStrings("enemyData/kobold.txt"), "enemySprites/kobold.png", globalTextureMultiplier, dropShadow, blockImage, 0, 0));
+  enemySet.add(new Enemy(loadStrings("enemyData/cyclops.txt"), "enemySprites/cyclops.png", globalTextureMultiplier, dropShadow, blockImage, 0, 0));
   
   
  
@@ -117,9 +118,19 @@ void setupBattle(int enemyCount){
   discard = new ArrayList<Card>();
   enemies = new ArrayList<Enemy>();
   playerTurn = true;
-  for (int i = 0; i < enemyCount; i++){
+
+  if (random(1) < sameEnemyChance){ //makes the battle a number of the same enemies
+    int enemyIndex = (int)random(enemySet.size());
+    for (int i = 0; i < enemyCount; i++){
+      enemies.add(enemySet.get(enemyIndex).clone());
+    }
+  }
+else{
+for (int i = 0; i < enemyCount; i++){ //makes the battle a random collection of enemies
     enemies.add(enemySet.get((int)random(enemySet.size())).clone());
   }
+}
+  
   for (int i = enemies.size()-1; i >= 0; i--){ //draw enemies
      Enemy enemy = enemies.get(i);
      int x = width - enemyLeft - (enemyPadding + enemy.getWidth())*(enemies.size() - i);
@@ -262,6 +273,9 @@ final int healFrameDelay = 30;
 int healFramesLeft = 0;
 ButtonWithText restContinueButton;
 boolean showRestContinue = false;
+
+
+final float sameEnemyChance = 0.65;
 /***
 GAME STATES:
 battle : in a battle, can play cards, click next turn. Turns rotate between player and enemy
@@ -396,7 +410,6 @@ void handleEnemyTurn(){
   if (actionQueue.isEmpty()){
       if (enemyTurnFinalDelay == 0){
       playerTurn = true;
-      drawToLimit();
       player.refreshEnergy();
       turnBanner.setText("Your Turn");
       turnBanner.setFramesLeft(155);
@@ -417,7 +430,18 @@ void handleEnemyTurn(){
   enemyTurnDelay--;
 }
 
+void discard(int amount){
+  if (amount >= hand.size()){
+    discard.addAll(hand);
+    hand.clear();
+  }
+  else{
+    for (int i = 0; i < amount; i++){
+      discard.add(hand.remove((int)random(hand.size())));
+    }
+  }
 
+}
 void addDamageNumber(Entity target, int amount){
   int x = (int)random(target.getX(), target.getX() + target.getWidth());
   int y = (int)random(target.getY(), target.getY() + target.getHeight()/2);
@@ -427,7 +451,7 @@ void addDamageNumber(Entity target, int amount){
 void handleActions(Entity source, Entity target, ArrayList<Action> actions){
   for (Action action : actions){
       switch (action.getType()){
-       case "a":
+       case "a": // attack
          if (action.getTarget()){
            target.damage(action.getAmount());
            addDamageNumber(target, action.getAmount());
@@ -437,14 +461,25 @@ void handleActions(Entity source, Entity target, ArrayList<Action> actions){
           addDamageNumber(source, action.getAmount());
          }
          break;
-       case "b":
+       case "b": //block
          if (action.getTarget()){
           target.addBlock(action.getAmount()); 
          }
          else{
           source.addBlock(action.getAmount()); 
          }
-       
+        break;
+
+        case "d": //discard
+        if (action.getTarget()){
+          assert (target == player) : "Only the player can be affected by discard actions. Should this action have no target?";
+        }
+        else{
+          assert (source == player) : "Only the player can be affected by discard actions. Should this action have a target?";
+        }
+        discard(action.getAmount());
+        break;
+
       }
   }
 }
@@ -526,6 +561,7 @@ void doButtonActions(Button b){
       turnBanner.setText("Enemy Turn");
       turnBanner.setFramesLeft(155);
       turnBanner.draw(width/2, (int)(height * 0.3), 60);
+      drawToLimit();
       setupEnemyActions();
      }
     break;

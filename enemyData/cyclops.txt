@@ -1,16 +1,16 @@
-Kobold
-50
+Cyclops
+70
 3
 Kobold Horn
 Kobold Claw
 Kobold Evade
 Arms
-a 1 8
+a 1 5 d 1 1
 Arms
-a 1 6 a 1 6
+a 1 12
 Legs
-b 0 6
+b 0 5 d 1 1
 Legs
-b 0 5 b 0 5
+b 0 8
 Head
-b 0 4 a 1 4
+d 1 3
