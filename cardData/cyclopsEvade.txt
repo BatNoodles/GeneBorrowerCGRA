@@ -1,0 +1,8 @@
+Cyclops Evade
+1
+d
+0
+1
+b
+0
+15

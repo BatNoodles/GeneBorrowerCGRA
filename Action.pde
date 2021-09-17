@@ -2,7 +2,7 @@ class Action{
  private String type;
  private boolean targetOther;
  private int amount;
- 
+ //TODO make target other be 0, 1 or 2, with 2 being target all enemies
  
  public Action(String type, int targetOther, int amount){
    this.type = type;

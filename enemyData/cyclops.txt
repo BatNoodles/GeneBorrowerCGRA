@@ -3,7 +3,7 @@ Cyclops
 3
 Cyclops Eye
 Cyclops Club
-Cyclops Eye
+Cyclops Evade
 Arms
 a 1 5 d 1 1
 Arms
