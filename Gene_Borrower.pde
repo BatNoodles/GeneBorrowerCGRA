@@ -1,3 +1,11 @@
+public enum State{
+BATTLE,
+REWARD,
+MAP,
+REST
+}
+
+
 void setup(){
   
   textFont(createFont("fonts/VT323-Regular.ttf", 30));
@@ -155,7 +163,7 @@ for (int i = 0; i < enemyCount; i++){ //makes the battle a random collection of 
   shuffleDeck();
   drawToLimit();
 
-  gameState = "battle";
+  gameState = State.BATTLE;
 }
 
 
@@ -243,7 +251,7 @@ TextWithBackground turnBanner;
 SpriteSheet energyCounter;
 final String energyImageName = "sprites/energySheet.png";
 
-String gameState;
+State gameState;
 
 PImage cardRewardButtonImage;
 PImage rewardPane;
@@ -300,9 +308,9 @@ void draw(){
     }
     image(backgroundImage,0,0,backgroundWidth,backgroundHeight);
     image(backgroundAdditionalImage,0,0,backgroundWidth,backgroundHeight);
-  if (gameState.equals("battle")){
+  if (gameState == State.BATTLE){
     if (enemies.size() == 0){
-     gameState = "reward"; 
+     gameState = State.REWARD;
      player.clearBlock();
     }
     
@@ -357,7 +365,7 @@ void draw(){
      handleEnemyTurn(); 
     }
   }
-  else if (gameState.equals("reward")){
+  else if (gameState == State.REWARD){
     handleMouse();
     image(rewardPane, 250, 150, rewardPane.width * globalTextureMultiplier, rewardPane.height * globalTextureMultiplier);
     fill(0);
@@ -368,7 +376,7 @@ void draw(){
     }
     
   }
-  else if (gameState.equals("map")){
+  else if (gameState == State.MAP){
     for (int y = 0; y < height; y+= mapTile.height * globalTextureMultiplier){
       image(mapTile, 0, y, mapTile.width * globalTextureMultiplier, mapTile.height * globalTextureMultiplier);
     }
@@ -384,7 +392,7 @@ void draw(){
     }
     handleMouse();
   }
-  else if (gameState.equals("rest")){
+  else if (gameState == State.REST){
     handleMouse();
     player.draw();
     image(campfireImage, 850, 375, campfireImage.width * globalTextureMultiplier, campfireImage.height * globalTextureMultiplier);
@@ -556,7 +564,7 @@ void doButtonActions(Button b){
   String buttonName = b.getName();
   switch(buttonName){
    case "endTurn":
-     if (playerTurn && gameState.equals("battle")){
+     if (playerTurn && gameState == State.BATTLE){
       playerTurn = false; 
       turnBanner.setText("Enemy Turn");
       turnBanner.setFramesLeft(155);
@@ -566,17 +574,17 @@ void doButtonActions(Button b){
      }
     break;
   case "cardRewardButton":
-    if (gameState.equals("reward")){
+    if (gameState == State.BATTLE){
       assert(b instanceof ButtonWithText) : "A reward button should always be an instance of a ButtonWithText";
       ButtonWithText bText = (ButtonWithText)b;
       Card reward = cardSet.get(bText.getCard());
       player.addCard(new Card(reward));
       currentNode.setVisited();
-      gameState = "map";
+      gameState = State.MAP;
     }
     break;
   case "mapNode":
-    if (gameState.equals("map")){
+    if (gameState == State.MAP){
       assert (b instanceof MapNode) : "A map node should always be an instance of a MapNode. I'm not sure how this could have happened";
       MapNode n = (MapNode)b;
       if (currentNode.getChildren().contains(n)){
@@ -584,7 +592,7 @@ void doButtonActions(Button b){
         currentNode.setVisited();
         if (n.getRest()){
           showRestContinue = false;
-          gameState = "rest";
+          gameState = State.REST;
           amountHealed = 0;
         }
         else{
@@ -595,7 +603,7 @@ void doButtonActions(Button b){
     }
     break;
   case "restContinue":
-    gameState = "map";
+    gameState = State.MAP;
     currentNode.setVisited();
   }
 }
@@ -604,10 +612,10 @@ void handleButtons(){
   if (mousePressed && pressedButton == null && selectedCard == null){
    ArrayList<Button> allButtons = new ArrayList<Button>();
    allButtons.addAll(buttons.values());
-   if (gameState.equals("reward")){
+   if (gameState == State.REWARD){
     allButtons.addAll(cardButtons);
    }
-   if (gameState.equals("map")){
+   if (gameState == State.MAP){
     allButtons.addAll(allMapNodes);
    }
    if (showRestContinue){
@@ -689,7 +697,7 @@ void handleMouseRewards(){
 
 void handleMouse(){ //handles the mouse and dragging of cards
 handleButtons();
-if (gameState.equals("battle")){
+if (gameState == State.BATTLE){
 if (playerTurn){
    if (mouseMode.equals("card")){
     handleMouseCard(); 
@@ -699,7 +707,7 @@ if (playerTurn){
    }
 }
 }
-else if (gameState.equals("reward")){
+else if (gameState == State.BATTLE){
 handleMouseRewards();
 }
 }
