@@ -191,7 +191,7 @@ final String backgroundName = "sprites/backgroundSunset.png";
 final String backgroundDetail = "sprites/backgroundSunsetTrees.png";
 final String repeatingUndergroundName = "sprites/smallDirt.png";
 final String dropShadowTexture = "sprites/dropShadow.png";
-final String blockTexture = "sprites/blockIcon.png";ng up global variables
+final String blockTexture = "sprites/blockIcon.png";
 final String playerSpriteName = "sprites/playerSprite.png";
 final String campfireImageName = "sprites/campfire.png";
 final String mapTileName = "sprites/mapTile.png";
@@ -209,7 +209,7 @@ PImage battleNodeImage;
 PImage finishedNode;
 PImage restNodeImage;
 PImage campfireImage;
-
+PImage mapTile;
 public ArrayList<Enemy> enemies;
 
 
