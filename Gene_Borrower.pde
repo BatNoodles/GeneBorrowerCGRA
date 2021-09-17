@@ -172,45 +172,72 @@ for (int i = 0; i < enemyCount; i++){ //makes the battle a random collection of 
 }
 
 
-//setting up global variables
+
+//hand and card stuff
 ArrayList<Card> hand;
 ArrayList<Card> deck;
 ArrayList<Card> discard;
 final int handLeft = 200; //setting up the hand
 final int handTop = 700;
 final int handPadding = 25;
+Card selectedCard;
+final int drawLimit = 5; //the amount of cards the player draws up to each turn
+HashMap<String, Card> cardSet;
+final String basicPunchName = "basicPunch";
+final String basicEvadeName = "basicEvade";
 
-public ArrayList<Enemy> enemies;
-
-
-PImage backgroundImage;
-PImage backgroundAdditionalImage;
-int backgroundWidth;
-int backgroundHeight;
+//images and filenames
 final String backgroundName = "sprites/backgroundSunset.png";
 final String backgroundDetail = "sprites/backgroundSunsetTrees.png";
 final String repeatingUndergroundName = "sprites/smallDirt.png";
 final String dropShadowTexture = "sprites/dropShadow.png";
-final String blockTexture = "sprites/blockIcon.png";
-//background sprites and resused sprites
-int playerWidth;
-int playerHeight;
-
+final String blockTexture = "sprites/blockIcon.png";ng up global variables
 final String playerSpriteName = "sprites/playerSprite.png";
+final String campfireImageName = "sprites/campfire.png";
+final String mapTileName = "sprites/mapTile.png";
+final String energyImageName = "sprites/energySheet.png";
 
-HashMap<String, Card> cardSet;
 
+PImage undergroundTile;
+PImage dropShadow;
+PImage blockImage;
+PImage backgroundImage;
+PImage backgroundAdditionalImage;
+PImage cardRewardButtonImage;
+PImage rewardPane;
+PImage battleNodeImage;
+PImage finishedNode;
+PImage restNodeImage;
+PImage campfireImage;
+
+public ArrayList<Enemy> enemies;
+
+
+//sizes and paddings
 final int globalTextureMultiplier = 6; //what the size of the actual sprites should be multiplied by
 
+int backgroundWidth;
+int backgroundHeight;
+
+
+int playerWidth;
+int playerHeight;
 
 final int cardHeight = 300; //size of each card
 final int cardWidth = 180;
 
-final int drawLimit = 5; //the amount of cards the player draws up to each turn
+final int enemyPadding = 65;
+final int enemyLeft = 100;
+int repeatingWidth;
+int repeatingHeight;
 
-Card selectedCard;
-
+//mouse stuff
 int selectXOffset, selectYOffset;
+String mouseMode;
+
+
+
+
 
 Player player;
 
@@ -219,26 +246,9 @@ ArrayList<Enemy> enemySet;
 ArrayList<EnemyActionGroup> actionGroupQueue;
 
 
-
-final int enemyPadding = 65;
-final int enemyLeft = 100;
-
-final String basicPunchName = "basicPunch";
-final String basicEvadeName = "basicEvade";
-
-
-String mouseMode;
-
 Enemy targetedEnemy;
 
 HashMap<String, Button> buttons;
-
-
-PImage undergroundTile;
-PImage dropShadow;
-PImage blockImage;
-int repeatingWidth;
-int repeatingHeight;
 
 ArrayList<EnemyAction> actionQueue;
 final int enemyDelay = 125;
@@ -254,16 +264,13 @@ Button pressedButton;
 
 TextWithBackground turnBanner;
 SpriteSheet energyCounter;
-final String energyImageName = "sprites/energySheet.png";
 
 State gameState;
 
-PImage cardRewardButtonImage;
-PImage rewardPane;
+
 ArrayList<ButtonWithText> cardButtons;
 
-PImage mapTile;
-final String mapTileName = "sprites/mapTile.png";
+
 
 final int cardRewardCount = 2;
 
@@ -271,13 +278,9 @@ final int cardRewardCount = 2;
 
 MapNode rootNode;
 MapNode currentNode;
-PImage battleNodeImage;
 ArrayList<MapNode> allMapNodes;
-PImage finishedNode;
-PImage restNodeImage;
 
-PImage campfireImage;
-final String campfireImageName = "sprites/campfire.png";
+
 
 
 final int healMax = 20;
