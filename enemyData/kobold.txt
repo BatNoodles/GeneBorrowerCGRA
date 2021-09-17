@@ -1,5 +1,5 @@
 Kobold
-50
+65
 3
 Kobold Horn
 Kobold Claw

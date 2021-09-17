@@ -1,5 +1,5 @@
 Cyclops
-70
+80
 3
 Kobold Horn
 Kobold Claw
