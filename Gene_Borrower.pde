@@ -525,8 +525,9 @@ void handleActions(Entity source, Entity target, ArrayList<Action> actions){
         else{
           assert (source == player) : "Only the player can be affected by discard actions. Should this action have a target?";
         }
-        discard(action.getAmount());
         addDamageNumber(player, "Discarded " + min(action.getAmount(), hand.size()));
+        discard(action.getAmount());
+        
         break;
 
       }
