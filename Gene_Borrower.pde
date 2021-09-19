@@ -501,12 +501,12 @@ void handleActions(Entity source, Entity target, ArrayList<Action> actions){
       switch (action.getType()){
        case "a": // attack
          if (action.getTarget()){
-           target.damage(action.getAmount());
-           addDamageNumber(target, action.getAmount());
+           target.damage(action.getAmount() + source.getStrength());
+           addDamageNumber(target, action.getAmount() + source.getStrength());
          }
          else{
-          source.damage(action.getAmount()); 
-          addDamageNumber(source, action.getAmount());
+          source.damage(action.getAmount()+ source.getStrength()); 
+          addDamageNumber(source, action.getAmount()+ source.getStrength());
          }
          break;
        case "b": //block
@@ -518,7 +518,7 @@ void handleActions(Entity source, Entity target, ArrayList<Action> actions){
          }
         break;
 
-        case "d": //discard
+      case "d": //discard
         if (action.getTarget()){
           assert (target == player) : "Only the player can be affected by discard actions. Should this action have no target?";
         }
@@ -529,7 +529,21 @@ void handleActions(Entity source, Entity target, ArrayList<Action> actions){
         discard(action.getAmount());
         
         break;
-
+      case "str":
+        if (action.getTarget()){
+          target.addStrength(action.getAmount());
+        }
+        else{
+          source.addStrength(action.getAmount())
+        }
+        break;
+      case "spd":
+        if (action.getTarget()){
+          target.addSpeed(action.getAmount());
+        }
+        else{
+          source.addSpeed(action.getAmount());
+        }
       }
   }
 }
