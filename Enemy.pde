@@ -31,7 +31,7 @@ public class Enemy extends Entity{
   private EnemyActionGroup nextAction;
 
 
-  public Enemy(String[] lines, String imageFilename, int textureMult, PImage shadow, PImage block, int x, int y) {
+  public Enemy(String[] lines, String imageFilename, int textureMult, PImage shadow,PImage strengthImage, PImage speedImage, PImage block, int x, int y) {
     super(Integer.parseInt(lines[1]), block, shadow, textureMult, imageFilename, x, y);
     this.lines = lines;
     

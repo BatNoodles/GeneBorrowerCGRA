@@ -19,6 +19,8 @@ void setup(){
   discard = new ArrayList<Card>();
   dropShadow = loadImage(dropShadowTexture); //shadow texture used by all entities
   blockImage = loadImage(blockTexture);
+  strengthImage = loadImage(strengthName);
+  speedImage = loadImage(speedName);
   backgroundImage = loadImage(backgroundName); //loading backgrounds
   backgroundAdditionalImage = loadImage(backgroundDetail);  
  
@@ -57,7 +59,7 @@ void setup(){
   undergroundTile = loadImage(repeatingUndergroundName); //repeating tile for undergroud, where the hand is drawn
   repeatingWidth = undergroundTile.width * globalTextureMultiplier;
   repeatingHeight = undergroundTile.height * globalTextureMultiplier;
-  player = new Player(100, 3, playerSpriteName, globalTextureMultiplier, dropShadow, blockImage, 100, 200); //creates the player
+  player = new Player(100, 3, playerSpriteName, globalTextureMultiplier, dropShadow, strengthIcon, speedIcon, blockImage, 100, 200); //creates the player
   player.constructBasicDeck(cardSet.get(basicPunchName), cardSet.get(basicEvadeName));  
   
   cardRewardButtonImage = loadImage("sprites/cardSelectButton.png");
@@ -65,8 +67,9 @@ void setup(){
   
   //TODO read all enemies from the enemy folder
   
-  enemySet.add(new Enemy(loadStrings("enemyData/kobold.txt"), "enemySprites/kobold.png", globalTextureMultiplier, dropShadow, blockImage, 0, 0));
-  enemySet.add(new Enemy(loadStrings("enemyData/cyclops.txt"), "enemySprites/cyclops.png", globalTextureMultiplier, dropShadow, blockImage, 0, 0));
+  enemySet.add(new Enemy(loadStrings("enemyData/kobold.txt"), "enemySprites/kobold.png", globalTextureMultiplier, dropShadow, strengthIcon, speedIcon, blockImage, 0, 0));
+  enemySet.add(new Enemy(loadStrings("enemyData/cyclops.txt"), "enemySprites/cyclops.png", globalTextureMultiplier, dropShadow, strengthIcon, speedIcon, blockImage, 0, 0));
+  enemySet.add(new Enemy(loadStrings("enemyData/wisp.txt"), "enemySprites/wisp.png", globalTextureMultiplier, dropShadow, strengthIcon, speedIcon, blockImage, 0, 0));
   
   
  
@@ -122,7 +125,7 @@ MapNode recursiveMapNode(int depth, int doubleCount,  int maxWidth, float double
 void setupBattle(int enemyCount){
    //code that is used to reset the battle
    player.refreshEnergy();
-   player.clearBlock();
+   player.clear();
   damageNumbers = new ArrayList<FadingText>();
   mouseMode = "card";
   actionQueue = new ArrayList<EnemyAction>();
@@ -197,7 +200,8 @@ final String playerSpriteName = "sprites/playerSprite.png";
 final String campfireImageName = "sprites/campfire.png";
 final String mapTileName = "sprites/mapTile.png";
 final String energyImageName = "sprites/energySheet.png";
-
+final String strengthName = "sprites/strengthIcon.png";
+final String speedName = "sprites/speedIcon.png";
 
 PImage undergroundTile;
 PImage dropShadow;
@@ -211,6 +215,11 @@ PImage finishedNode;
 PImage restNodeImage;
 PImage campfireImage;
 PImage mapTile;
+PImage strengthImage;
+PImage speedImage;
+
+
+
 public ArrayList<Enemy> enemies;
 
 
@@ -534,7 +543,7 @@ void handleActions(Entity source, Entity target, ArrayList<Action> actions){
           target.addStrength(action.getAmount());
         }
         else{
-          source.addStrength(action.getAmount())
+          source.addStrength(action.getAmount());
         }
         break;
       case "spd":

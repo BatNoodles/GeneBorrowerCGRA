@@ -15,7 +15,7 @@ public class Player extends Entity{
  private int healthbarHeight;
  
  private PImage shadow;
- public Player(int maxHealth, int maxEnergy, String imageFilename, int textureMult, PImage shadow, PImage block, int x, int y){
+ public Player(int maxHealth, int maxEnergy, String imageFilename, int textureMult, PImage shadow, PImage strengthImage, PImage speedImage,PImage block, int x, int y){
    super(maxHealth, block, shadow, textureMult, imageFilename, x,y);  
      this.energy = maxEnergy;
      this.maxEnergy = maxEnergy;

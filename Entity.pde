@@ -8,7 +8,8 @@ abstract class Entity{
  
  protected PImage blockImage;
  protected PImage shadow;
- 
+ protected PImage strengthImage;
+ protected PImage speedImage;
  protected int textureMult;
   
   
@@ -22,7 +23,7 @@ abstract class Entity{
  protected int strength;
  
  
- public Entity(int maxHealth, PImage blockImage, PImage shadow, int textureMult, String imageFilename, int x, int y){
+ public Entity(int maxHealth, PImage blockImage, PImage shadow, PImage strengthImage, PImage speedImage, int textureMult, String imageFilename, int x, int y){
   this.maxHealth = maxHealth;
   this.health = maxHealth;
   this.blockImage = blockImage;
@@ -31,6 +32,9 @@ abstract class Entity{
   this.imageFilename = imageFilename;
   this.image = loadImage(this.imageFilename);
   this.defense = 0;
+
+  this.strengthImage = strengthImage;
+  this.speedImage = speedImage;
   
   this.healthbarHeight = 20;
   this.healthbarWidth = (int)(this.image.width * this.textureMult);
@@ -80,7 +84,12 @@ abstract class Entity{
    this.defense = 0; 
   }
   
-  
+  public void clear(){
+    this.defense = 0;
+    this.strength = 0;
+    this.speed = 0;
+  }
+
   public boolean damage(int damage){
    assert damage > 0 : "Damage cannot be negative, use heal instead";
     if (damage >  this.defense){
@@ -138,7 +147,12 @@ public void heal(int amount){
    text(Integer.toString(defense), blockX, blockY + blockImage.height * textureMult * 0.2, blockImage.width * textureMult, blockImage.height * textureMult);
    textSize(20);
    text(this.health + "/" + this.maxHealth, x-(this.image.width * textureMult - this.healthbarWidth)/2, y + this.image.height * this.textureMult + this.healthbarHeight * 1.5, this.healthbarWidth, this.healthbarHeight);
-   
+   if (this.strength != 0){
+     image(this.strengthImage, x , y + this.healthbarHeight,  this.strengthImage.width * textureMult, this.strengthImage.height * textureMult);
+     text(this.strength, x + this.strengthImage.width * textureMult, this.y);
+   }
+
+
  }
   
 }
