@@ -17,6 +17,9 @@ abstract class Entity{
  
  protected int x;
  protected int y;
+
+ protected int speed;
+ protected int strength;
  
  
  public Entity(int maxHealth, PImage blockImage, PImage shadow, int textureMult, String imageFilename, int x, int y){
@@ -34,9 +37,24 @@ abstract class Entity{
   
   this.x = x;
   this.y = y;
+  this.speed = 0;
+  this.strength = 0;
  }
   
   
+  public void addStrength(int amount){
+    this.strength += amount;
+  }
+
+  public void addSpeed(int amount){
+    this.speed += amount;
+  }
+
+  public int getStrength(){
+    return this.strength;
+  }
+
+
   public int getWidth(){
    return this.image.width * this.textureMult; 
   }
@@ -79,7 +97,7 @@ abstract class Entity{
   }
   
    public void addBlock(int amount){
-   this.defense += amount;
+   this.defense += amount + this.speed;
  }
  
  
