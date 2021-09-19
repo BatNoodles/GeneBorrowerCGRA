@@ -59,7 +59,7 @@ void setup(){
   undergroundTile = loadImage(repeatingUndergroundName); //repeating tile for undergroud, where the hand is drawn
   repeatingWidth = undergroundTile.width * globalTextureMultiplier;
   repeatingHeight = undergroundTile.height * globalTextureMultiplier;
-  player = new Player(100, 3, playerSpriteName, globalTextureMultiplier, dropShadow, strengthIcon, speedIcon, blockImage, 100, 200); //creates the player
+  player = new Player(100, 3, playerSpriteName, globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 100, 200); //creates the player
   player.constructBasicDeck(cardSet.get(basicPunchName), cardSet.get(basicEvadeName));  
   
   cardRewardButtonImage = loadImage("sprites/cardSelectButton.png");
@@ -67,9 +67,9 @@ void setup(){
   
   //TODO read all enemies from the enemy folder
   
-  enemySet.add(new Enemy(loadStrings("enemyData/kobold.txt"), "enemySprites/kobold.png", globalTextureMultiplier, dropShadow, strengthIcon, speedIcon, blockImage, 0, 0));
-  enemySet.add(new Enemy(loadStrings("enemyData/cyclops.txt"), "enemySprites/cyclops.png", globalTextureMultiplier, dropShadow, strengthIcon, speedIcon, blockImage, 0, 0));
-  enemySet.add(new Enemy(loadStrings("enemyData/wisp.txt"), "enemySprites/wisp.png", globalTextureMultiplier, dropShadow, strengthIcon, speedIcon, blockImage, 0, 0));
+  enemySet.add(new Enemy(loadStrings("enemyData/kobold.txt"), "enemySprites/kobold.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0));
+  enemySet.add(new Enemy(loadStrings("enemyData/cyclops.txt"), "enemySprites/cyclops.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0));
+  enemySet.add(new Enemy(loadStrings("enemyData/wisp.txt"), "enemySprites/wisp.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0));
   
   
  
