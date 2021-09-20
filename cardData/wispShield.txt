@@ -1,0 +1,8 @@
+Wisp Shield
+1
+b
+0
+3
+spd
+0
+1

@@ -1,9 +1,9 @@
 Wisp
 70
 3
-Cyclops Eye
-Cyclops Club
-Cyclops Evade
+Wisp Shield
+Wisp Ember
+Wisp Ritual
 Ritual
 str 0 3 spd 0 3
 Ritual
