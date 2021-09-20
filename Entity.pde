@@ -147,9 +147,17 @@ public void heal(int amount){
    text(Integer.toString(defense), blockX, blockY + blockImage.height * textureMult * 0.2, blockImage.width * textureMult, blockImage.height * textureMult);
    textSize(20);
    text(this.health + "/" + this.maxHealth, x-(this.image.width * textureMult - this.healthbarWidth)/2, y + this.image.height * this.textureMult + this.healthbarHeight * 1.5, this.healthbarWidth, this.healthbarHeight);
+   textSize(this.strengthImage.height * this.textureMult);
+   int y = this.y + image.height * this.textureMult + healthbarHeight + 10;
+   int x = this.x;
    if (this.strength != 0){
      image(this.strengthImage, x , y + this.healthbarHeight,  this.strengthImage.width * textureMult, this.strengthImage.height * textureMult);
-     text(this.strength, x + this.strengthImage.width * textureMult, this.y);
+     text(this.strength, x + this.strengthImage.width * textureMult * 1.1, y+ this.healthbarHeight + this.strengthImage.height * this.textureMult);
+     x += (Integer.toString(this.strength).length() + 1) * this.strengthImage.height * this.textureMult;
+   }
+   if (this.speed != 0){
+     image(this.speedImage, x , y + this.healthbarHeight,  this.speedImage.width * textureMult, this.speedImage.height * textureMult);
+     text(this.speed, x + this.speedImage.width * textureMult * 1.1, y+ this.healthbarHeight + this.speedImage.height * this.textureMult);
    }
 
 
