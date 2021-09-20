@@ -23,7 +23,7 @@ abstract class Entity{
  protected int strength;
  
  
- public Entity(int maxHealth, PImage blockImage, PImage shadow, PImage strengthImage, PImage speedImage, int textureMult, String imageFilename, int x, int y){
+ public Entity(int maxHealth,  PImage shadow, PImage strengthImage, PImage speedImage, PImage blockImage,int textureMult, String imageFilename, int x, int y){
   this.maxHealth = maxHealth;
   this.health = maxHealth;
   this.blockImage = blockImage;

@@ -32,7 +32,7 @@ public class Enemy extends Entity{
 
 
   public Enemy(String[] lines, String imageFilename, int textureMult, PImage shadow,PImage strengthImage, PImage speedImage, PImage block, int x, int y) {
-    super(Integer.parseInt(lines[1]), block, strengthImage, speedImage,shadow, textureMult, imageFilename, x, y);
+    super(Integer.parseInt(lines[1]), shadow, strengthImage, speedImage,block, textureMult, imageFilename, x, y);
     this.lines = lines;
     
     this.name = lines[0];

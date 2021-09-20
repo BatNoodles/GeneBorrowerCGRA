@@ -16,7 +16,7 @@ public class Player extends Entity{
  
  private PImage shadow;
  public Player(int maxHealth, int maxEnergy, String imageFilename, int textureMult, PImage shadow, PImage strengthImage, PImage speedImage,PImage block, int x, int y){
-   super(maxHealth, block, strengthImage, speedImage, shadow, textureMult, imageFilename, x,y);  
+   super(maxHealth, shadow, strengthImage, speedImage, block, textureMult, imageFilename, x,y);  
      this.energy = maxEnergy;
      this.maxEnergy = maxEnergy;
      this.deck = new ArrayList<Card>();

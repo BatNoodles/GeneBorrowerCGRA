@@ -1,3 +1,5 @@
+//TODO Fix the constructors for the entities as the images are way out of order lol. holy shit it is dumb :)
+
 public enum State{
 BATTLE,
 REWARD,
