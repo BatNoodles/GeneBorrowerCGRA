@@ -1,0 +1,18 @@
+Wisp
+70
+3
+Cyclops Eye
+Cyclops Club
+Cyclops Evade
+Ritual
+str 0 3 spd 0 3
+Ritual
+b 0 10 str 0 1 spd 0 1
+Ember
+a 1 1 a 1 1 str 0 1
+Ember
+a 1 1 a 1 1 a 1 1
+Flameshield
+b 0 1 b 0 1 spd 0 1
+Flameshield
+b 0 1 b 0 1 b 0 1
