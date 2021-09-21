@@ -1,6 +1,7 @@
 //TODO Fix the constructors for the entities as the images are way out of order lol. holy shit it is dumb :)
 
 public enum State{
+START,
 BATTLE,
 REWARD,
 MAP,
@@ -17,8 +18,7 @@ void setup(){
   
   textFont(createFont("fonts/VT323-Regular.ttf", 30));
   frameRate(155); //only used so it looks smooth on my monitor :)
-  hand = new ArrayList<Card>();
-  discard = new ArrayList<Card>();
+  
   dropShadow = loadImage(dropShadowTexture); //shadow texture used by all entities
   blockImage = loadImage(blockTexture);
   strengthImage = loadImage(strengthName);
@@ -81,10 +81,17 @@ void setup(){
   mapTile = loadImage(mapTileName);
   finishedNode = loadImage("sprites/finishedNode.png");
   campfireImage = loadImage(campfireImageName);
+  
+  setupGame();
+}
+
+void setupGame(){ //sorta resets the game
+  hand = new ArrayList<Card>();
+  discard = new ArrayList<Card>();
   setupMap();
   setupBattle(currentNode.getEnemyCount());
-  
 }
+
 void setupMap(){
   restNodeImage = loadImage("sprites/restIconSheet.png");
   battleNodeImage = loadImage("sprites/battleIconSheet.png");
