@@ -88,6 +88,10 @@ void setup(){
   finishedNode = loadImage("sprites/finishedNode.png");
   campfireImage = new AnimatedSpriteSheet(loadImage(campfireImageName), 32, globalTextureMultiplier, ANIMATION_FRAMES);
   
+  startButtons = new ArrayList<ButtonWithText>();
+  startButtons.add(new ButtonWithText(cardRewardButtonImage, 750, 400, globalTextureMultiplier, "startGame", "Start"));
+  startButtons.add(new ButtonWithText(cardRewardButtonImage, 750, 500, globalTextureMultiplier, "quitGame", "Quit"));
+
   setupGame();
   
 }
@@ -238,7 +242,7 @@ PImage speedImage;
 PImage title;
 
 
-final int ANIMATION_FRAMES = 50;
+final int ANIMATION_FRAMES = 75;
 
 
 public ArrayList<Enemy> enemies;
@@ -301,7 +305,7 @@ State gameState;
 
 ArrayList<ButtonWithText> cardButtons;
 
-
+ArrayList<ButtonWithText> startButtons;
 
 final int cardRewardCount = 2;
 
@@ -353,7 +357,7 @@ void draw(){
   if (gameState == State.BATTLE){
     if (enemies.size() == 0){
      gameState = State.REWARD;
-     player.clearBlock();
+     player.clear();
     }
     
     
@@ -461,6 +465,10 @@ void draw(){
     image(title, 600, 0, title.width * globalTextureMultiplier, title.height * globalTextureMultiplier);
     player.drawSitting(false);
     campfireImage.draw(360,300);
+    handleMouse();    
+    for (ButtonWithText b : startButtons){
+      b.draw();
+    }
   }
 }
 
@@ -698,7 +706,8 @@ void doButtonActions(Button b){
           amountHealed = 0;
         }
         else{
-        setupBattle(n.getEnemyCount());          
+        setupBattle(n.getEnemyCount());
+        gameState = State.BATTLE;          
         }
       }
     
@@ -707,6 +716,14 @@ void doButtonActions(Button b){
   case "restContinue":
     gameState = State.MAP;
     currentNode.setVisited();
+    break;
+  case "startGame":
+    gameState = State.BATTLE;
+    break;
+  case "quitGame":
+    exit();
+    break;
+
   }
 }
 
@@ -720,8 +737,11 @@ void handleButtons(){
    if (gameState == State.MAP){
     allButtons.addAll(allMapNodes);
    }
-   if (showRestContinue){
+   if (showRestContinue && gameState == State.REST){
      allButtons.add(restContinueButton);
+   }
+   if (gameState == State.START){
+     allButtons.addAll(startButtons);
    }
    for (Button button : allButtons){
     if (button.checkInside(mouseX, mouseY)){
