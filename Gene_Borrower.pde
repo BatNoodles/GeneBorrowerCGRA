@@ -79,7 +79,7 @@ void setup(){
   enemySet.add(new Enemy(loadStrings("enemyData/cyclops.txt"), "enemySprites/cyclops.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0));
   enemySet.add(new Enemy(loadStrings("enemyData/wisp.txt"), "enemySprites/wisp.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0));
   
-  
+  title = loadImage(titleName);
  
   //TODO but not for a long time: add sprite sheets and animations (easier said than done)
   
@@ -89,6 +89,7 @@ void setup(){
   campfireImage = new AnimatedSpriteSheet(loadImage(campfireImageName), 32, globalTextureMultiplier, ANIMATION_FRAMES);
   
   setupGame();
+  
 }
 
 void setupGame(){ //sorta resets the game
@@ -96,6 +97,7 @@ void setupGame(){ //sorta resets the game
   discard = new ArrayList<Card>();
   setupMap();
   setupBattle(currentNode.getEnemyCount());
+  gameState = State.START;
 }
 
 void setupMap(){
@@ -185,8 +187,6 @@ void setupBattle(int enemyCount){
   setupDeck();
   shuffleDeck();
   setupHand();
-
-  gameState = State.BATTLE;
 }
 
 
@@ -218,7 +218,7 @@ final String energyImageName = "sprites/energySheet.png";
 final String strengthName = "sprites/strengthIcon.png";
 final String speedName = "sprites/speedIcon.png";
 final String playerSittingName = "spritesheets/playerSitting.png";
-
+final String titleName = "sprites/title.png";
 
 
 PImage undergroundTile;
@@ -235,7 +235,7 @@ AnimatedSpriteSheet campfireImage;
 PImage mapTile;
 PImage strengthImage;
 PImage speedImage;
-
+PImage title;
 
 
 final int ANIMATION_FRAMES = 50;
@@ -348,8 +348,8 @@ void draw(){
        image(undergroundTile, x, y, repeatingWidth, repeatingHeight);
      }
     }
-    image(backgroundImage,0,0,backgroundWidth,backgroundHeight);
-    image(backgroundAdditionalImage,0,0,backgroundWidth,backgroundHeight);
+  image(backgroundImage,0,0,backgroundWidth,backgroundHeight);
+  image(backgroundAdditionalImage,0,0,backgroundWidth,backgroundHeight);
   if (gameState == State.BATTLE){
     if (enemies.size() == 0){
      gameState = State.REWARD;
@@ -456,6 +456,11 @@ void draw(){
       showRestContinue = true;
       restContinueButton.draw();
     }
+  }
+  else if (gameState == State.START){
+    image(title, 600, 0, title.width * globalTextureMultiplier, title.height * globalTextureMultiplier);
+    player.drawSitting(false);
+    campfireImage.draw(360,300);
   }
 }
 
