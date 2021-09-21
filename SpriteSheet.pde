@@ -1,7 +1,7 @@
 class SpriteSheet{
-    PImage[] sprites;
-    int width;
-    int height;
+    protected PImage[] sprites;
+    protected int width;
+    protected int height;
     public SpriteSheet(PImage baseImage, int spriteCount, int imageMult){
         sprites = new PImage[spriteCount];
         int W = baseImage.width / spriteCount;

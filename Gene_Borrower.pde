@@ -61,13 +61,19 @@ void setup(){
   undergroundTile = loadImage(repeatingUndergroundName); //repeating tile for undergroud, where the hand is drawn
   repeatingWidth = undergroundTile.width * globalTextureMultiplier;
   repeatingHeight = undergroundTile.height * globalTextureMultiplier;
+  
+  
+  
   player = new Player(100, 3, playerSpriteName, globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 100, 200); //creates the player
   player.constructBasicDeck(cardSet.get(basicPunchName), cardSet.get(basicEvadeName));  
+  player.setSittingSheet(new AnimatedSpriteSheet(loadImage(playerSittingName), 48, globalTextureMultiplier, ANIMATION_FRAMES));
+  
+  
+  
   
   cardRewardButtonImage = loadImage("sprites/cardSelectButton.png");
   rewardPane = loadImage("sprites/endBattlePane.png");
   
-  //TODO read all enemies from the enemy folder
   
   enemySet.add(new Enemy(loadStrings("enemyData/kobold.txt"), "enemySprites/kobold.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0));
   enemySet.add(new Enemy(loadStrings("enemyData/cyclops.txt"), "enemySprites/cyclops.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0));
@@ -80,7 +86,7 @@ void setup(){
   restContinueButton = new ButtonWithText(cardRewardButtonImage, 750, 600, globalTextureMultiplier, "restContinue", "Continue", ""); //TODO make actualy spritesheet for continue button lol
   mapTile = loadImage(mapTileName);
   finishedNode = loadImage("sprites/finishedNode.png");
-  campfireImage = loadImage(campfireImageName);
+  campfireImage = new AnimatedSpriteSheet(loadImage(campfireImageName), 32, globalTextureMultiplier, ANIMATION_FRAMES);
   
   setupGame();
 }
@@ -150,11 +156,11 @@ void setupBattle(int enemyCount){
       enemies.add(enemySet.get(enemyIndex).clone());
     }
   }
-else{
-for (int i = 0; i < enemyCount; i++){ //makes the battle a random collection of enemies
-    enemies.add(enemySet.get((int)random(enemySet.size())).clone());
+  else{
+  for (int i = 0; i < enemyCount; i++){ //makes the battle a random collection of enemies
+      enemies.add(enemySet.get((int)random(enemySet.size())).clone());
+    }
   }
-}
   
   for (int i = enemies.size()-1; i >= 0; i--){ //draw enemies
      Enemy enemy = enemies.get(i);
@@ -206,11 +212,14 @@ final String repeatingUndergroundName = "sprites/smallDirt.png";
 final String dropShadowTexture = "sprites/dropShadow.png";
 final String blockTexture = "sprites/blockIcon.png";
 final String playerSpriteName = "sprites/playerSprite.png";
-final String campfireImageName = "sprites/campfire.png";
+final String campfireImageName = "spritesheets/campfire.png";
 final String mapTileName = "sprites/mapTile.png";
 final String energyImageName = "sprites/energySheet.png";
 final String strengthName = "sprites/strengthIcon.png";
 final String speedName = "sprites/speedIcon.png";
+final String playerSittingName = "spritesheets/playerSitting.png";
+
+
 
 PImage undergroundTile;
 PImage dropShadow;
@@ -222,11 +231,14 @@ PImage rewardPane;
 PImage battleNodeImage;
 PImage finishedNode;
 PImage restNodeImage;
-PImage campfireImage;
+AnimatedSpriteSheet campfireImage;
 PImage mapTile;
 PImage strengthImage;
 PImage speedImage;
 
+
+
+final int ANIMATION_FRAMES = 50;
 
 
 public ArrayList<Enemy> enemies;
@@ -427,8 +439,9 @@ void draw(){
   }
   else if (gameState == State.REST){
     handleMouse();
-    player.draw();
-    image(campfireImage, 850, 375, campfireImage.width * globalTextureMultiplier, campfireImage.height * globalTextureMultiplier);
+    player.drawSitting(true);
+    campfireImage.draw(850, 375);
+    //image(campfireImage, 850, 375, campfireImage.width * globalTextureMultiplier, campfireImage.height * globalTextureMultiplier);
     if (amountHealed < healMax && !player.isMaxHealth()){
       if (healFramesLeft == 0){
         healFramesLeft = healFrameDelay;

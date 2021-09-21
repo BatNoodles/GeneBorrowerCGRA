@@ -127,10 +127,25 @@ public void heal(int amount){
    public void draw(){
    
    noStroke();   
-   image(this.shadow, x + (this.image.width * this.textureMult - this.shadow.width * this.textureMult) / 2, y + this.image.height * this.textureMult - 0.5 * this.textureMult * this.shadow.height, this.shadow.width * this.textureMult,this.shadow.height * this.textureMult);
+   drawShadow();
    image(this.image, x, y, this.image.width * this.textureMult, this.image.height * this.textureMult);
    
    
+  
+   
+   drawUI();
+   
+   
+
+
+ }
+  
+
+
+protected void drawShadow(){
+  image(this.shadow, x + (this.image.width * this.textureMult - this.shadow.width * this.textureMult) / 2, y + this.image.height * this.textureMult - 0.5 * this.textureMult * this.shadow.height, this.shadow.width * this.textureMult,this.shadow.height * this.textureMult);
+}
+protected void drawUI(){
    fill(255,0,0);
    rect(x - (this.image.width * textureMult - this.healthbarWidth)/2, y + this.image.height * this.textureMult + this.healthbarHeight * 1.5, this.healthbarWidth, this.healthbarHeight);
    fill(0,255,0);
@@ -138,10 +153,7 @@ public void heal(int amount){
    int blockX =x - (this.image.width * textureMult - this.healthbarWidth)/2 + this.healthbarWidth; 
    float blockY = y + this.image.height * this.textureMult + this.healthbarHeight * 1.75 - this.blockImage.height * this.textureMult  / 2;
    image(this.blockImage, blockX,  blockY, this.blockImage.width * this.textureMult, this.blockImage.height * this.textureMult);
-   
-   
-   
-   fill(0,0,0);
+  fill(0,0,0);
    textSize(30);
    textAlign(CENTER);
    text(Integer.toString(defense), blockX, blockY + blockImage.height * textureMult * 0.2, blockImage.width * textureMult, blockImage.height * textureMult);
@@ -159,8 +171,5 @@ public void heal(int amount){
      image(this.speedImage, x , y + this.healthbarHeight,  this.speedImage.width * textureMult, this.speedImage.height * textureMult);
      text(this.speed, x + this.speedImage.width * textureMult * 1.1, y+ this.healthbarHeight + this.speedImage.height * this.textureMult);
    }
-
-
- }
-  
+}
 }

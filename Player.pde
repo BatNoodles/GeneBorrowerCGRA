@@ -5,7 +5,7 @@ public class Player extends Entity{
  private int energy;
  private int maxEnergy;
  
- 
+ private AnimatedSpriteSheet sittingSheet;
   
   
  
@@ -22,6 +22,17 @@ public class Player extends Entity{
      this.deck = new ArrayList<Card>();
  }
  
+ public void setSittingSheet(AnimatedSpriteSheet s){
+   this.sittingSheet = s;
+ }
+
+ public void drawSitting(boolean UI){
+   drawShadow();
+   sittingSheet.draw(this.x-50, this.y);
+   if (UI){
+     drawUI();
+   }
+ }
  
  public void constructBasicDeck(Card basicAttack, Card basicEvade){
    for (int i = 0; i < 5; i++){
