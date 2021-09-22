@@ -75,11 +75,17 @@ void setup(){
   cardRewardButtonImage = loadImage("sprites/cardSelectButton.png");
   rewardPane = loadImage("sprites/endBattlePane.png");
   
+  Enemy e;
+  e = new Enemy(loadStrings("enemyData/kobold.txt"), "enemySprites/kobold.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0);
+  enemySet.add(e);
+  e = new Enemy(loadStrings("enemyData/cyclops.txt"), "enemySprites/cyclops.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0);
+  e.setIdle(new AnimatedSpriteSheet(loadImage("spritesheets/cyclopsIdle.png"), 32, globalTextureMultiplier, ANIMATION_FRAMES));
+  enemySet.add(e);
+  new Enemy(loadStrings("enemyData/wisp.txt"), "enemySprites/wisp.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0);
+  enemySet.add(e);
   
-  enemySet.add(new Enemy(loadStrings("enemyData/kobold.txt"), "enemySprites/kobold.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0));
-  enemySet.add(new Enemy(loadStrings("enemyData/cyclops.txt"), "enemySprites/cyclops.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0));
-  enemySet.add(new Enemy(loadStrings("enemyData/wisp.txt"), "enemySprites/wisp.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0));
   
+
   title = loadImage(titleName);
  
   //TODO but not for a long time: add sprite sheets and animations (easier said than done)
