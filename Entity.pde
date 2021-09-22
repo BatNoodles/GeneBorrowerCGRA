@@ -22,6 +22,7 @@ abstract class Entity{
  protected int speed;
  protected int strength;
  
+ protected AnimatedSpriteSheet idleAnimation;
  
  public Entity(int maxHealth,  PImage shadow, PImage strengthImage, PImage speedImage, PImage blockImage,int textureMult, String imageFilename, int x, int y){
   this.maxHealth = maxHealth;
@@ -43,8 +44,13 @@ abstract class Entity{
   this.y = y;
   this.speed = 0;
   this.strength = 0;
+  idleAnimation = null;
  }
   
+
+  public void setIdle(AnimatedSpriteSheet idle){
+    this.idleAnimation = idle;
+  }
   
   public void addStrength(int amount){
     this.strength += amount;
@@ -128,7 +134,13 @@ public void heal(int amount){
    
    noStroke();   
    drawShadow();
-   image(this.image, x, y, this.image.width * this.textureMult, this.image.height * this.textureMult);
+   if (this.idleAnimation != null){
+     idleAnimation.draw(x,y);
+   }
+   else{
+     image(this.image, x, y, this.image.width * this.textureMult, this.image.height * this.textureMult);  
+   }
+   
    
    
   

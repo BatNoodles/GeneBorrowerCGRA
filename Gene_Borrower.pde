@@ -67,7 +67,8 @@ void setup(){
   player = new Player(100, 3, playerSpriteName, globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 100, 200); //creates the player
   player.constructBasicDeck(cardSet.get(basicPunchName), cardSet.get(basicEvadeName));  
   player.setSittingSheet(new AnimatedSpriteSheet(loadImage(playerSittingName), 48, globalTextureMultiplier, ANIMATION_FRAMES));
-  
+  player.setIdle(new AnimatedSpriteSheet(loadImage(playerIdle), 32, globalTextureMultiplier, ANIMATION_FRAMES));
+
   
   
   
@@ -223,7 +224,7 @@ final String strengthName = "sprites/strengthIcon.png";
 final String speedName = "sprites/speedIcon.png";
 final String playerSittingName = "spritesheets/playerSitting.png";
 final String titleName = "sprites/title.png";
-
+final String playerIdle = "spritesheets/playerIdle.png";
 
 PImage undergroundTile;
 PImage dropShadow;
