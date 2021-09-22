@@ -77,6 +77,7 @@ void setup(){
   
   Enemy e;
   e = new Enemy(loadStrings("enemyData/kobold.txt"), "enemySprites/kobold.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0);
+  e.setIdle(new AnimatedSpriteSheet(loadImage("spritesheets/koboldIdle.png"), 32, globalTextureMultiplier, ANIMATION_FRAMES));
   enemySet.add(e);
   e = new Enemy(loadStrings("enemyData/cyclops.txt"), "enemySprites/cyclops.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0);
   e.setIdle(new AnimatedSpriteSheet(loadImage("spritesheets/cyclopsIdle.png"), 32, globalTextureMultiplier, ANIMATION_FRAMES));
@@ -174,9 +175,9 @@ void setupBattle(int enemyCount){
       enemies.add(enemySet.get((int)random(enemySet.size())).clone());
     }
   }
-  
   for (int i = enemies.size()-1; i >= 0; i--){ //draw enemies
      Enemy enemy = enemies.get(i);
+     enemy.addDelay();
      int x = width - enemyLeft - (enemyPadding + enemy.getWidth())*(enemies.size() - i);
      int y = 200;
      enemy.setX(x);
