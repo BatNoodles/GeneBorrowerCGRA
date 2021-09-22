@@ -82,7 +82,8 @@ void setup(){
   e = new Enemy(loadStrings("enemyData/cyclops.txt"), "enemySprites/cyclops.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0);
   e.setIdle(new AnimatedSpriteSheet(loadImage("spritesheets/cyclopsIdle.png"), 32, globalTextureMultiplier, ANIMATION_FRAMES));
   enemySet.add(e);
-  new Enemy(loadStrings("enemyData/wisp.txt"), "enemySprites/wisp.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0);
+  e = new Enemy(loadStrings("enemyData/wisp.txt"), "enemySprites/wisp.png", globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 0, 0);
+  e.setIdle(new AnimatedSpriteSheet(loadImage("spritesheets/wispIdle.png"), 32, globalTextureMultiplier, ANIMATION_FRAMES));
   enemySet.add(e);
   
   
