@@ -59,7 +59,9 @@ public class Enemy extends Entity{
  
   
   public Enemy clone(){
-   return new Enemy(this.lines, this.imageFilename, this.textureMult, this.shadow, this.strengthImage, this.speedImage, this.blockImage, this.x, this.y); 
+    Enemy e = new Enemy(this.lines, this.imageFilename, this.textureMult, this.shadow, this.strengthImage, this.speedImage, this.blockImage, this.x, this.y);
+    e.setIdle(idleAnimation);
+   return e; 
   }
   
 
