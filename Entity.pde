@@ -51,6 +51,14 @@ abstract class Entity{
   public void setIdle(AnimatedSpriteSheet idle){
     this.idleAnimation = idle;
   }
+  public void addDelay(){
+    for (int i = 0; i < random(3); i++){
+      this.idleAnimation.next();
+    }
+    
+    this.idleAnimation.addFrames((int)random(10));
+    
+  }
   
   public void addStrength(int amount){
     this.strength += amount;

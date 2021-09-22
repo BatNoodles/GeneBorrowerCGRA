@@ -1,9 +1,11 @@
 class SpriteSheet{
+    protected PImage image;
     protected PImage[] sprites;
     protected int width;
     protected int height;
     public SpriteSheet(PImage baseImage, int spriteCount, int imageMult){
         sprites = new PImage[spriteCount];
+        this.image = baseImage;
         int W = baseImage.width / spriteCount;
         int H = baseImage.height;
         for (int i = 0; i < spriteCount; i++){

@@ -9,6 +9,10 @@ class AnimatedSpriteSheet extends SpriteSheet{
         this.spriteIndex = 0;
     }
 
+    public void addFrames(int amount){
+        this.currentFrame += amount;
+    }
+
     public boolean draw(int x, int y){ //needed to return whether the animation is over, this will be used to play attack animations for entities;
         super.draw(x,y, this.spriteIndex);
         if (currentFrame == frames){
@@ -23,8 +27,8 @@ class AnimatedSpriteSheet extends SpriteSheet{
         
     }
 
-    private boolean next(){
-        if (this.spriteIndex == this.sprites.length - 1){
+    public boolean next(){
+        if (this.spriteIndex >= this.sprites.length - 1){
             this.spriteIndex = 0;
             return true;
         }
@@ -33,4 +37,9 @@ class AnimatedSpriteSheet extends SpriteSheet{
             return false;
         }
     }
+
+    public AnimatedSpriteSheet clone(){
+        return new AnimatedSpriteSheet(this.image, this.width, this.imageMult, this.frames);
+    }
+
 }
