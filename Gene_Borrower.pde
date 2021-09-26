@@ -66,7 +66,7 @@ void setup(){
   
   
   player = new Player(100, 3, playerSpriteName, globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 100, 200); //creates the player
-  player.constructBasicDeck(cardSet.get(basicPunchName), cardSet.get(basicEvadeName));  
+  
   player.setSittingSheet(new AnimatedSpriteSheet(loadImage(playerSittingName), 48, globalTextureMultiplier, ANIMATION_FRAMES));
   player.setDeadImage(loadImage(deadPlayerName));
   player.setIdle(new AnimatedSpriteSheet(loadImage(playerIdle), 32, globalTextureMultiplier, ANIMATION_FRAMES));
@@ -113,6 +113,8 @@ void setupGame(){ //sorta resets the game
   deadFramesLeft = deadFadeFrames;
   hand = new ArrayList<Card>();
   discard = new ArrayList<Card>();
+  player.setup();
+  player.constructBasicDeck(cardSet.get(basicPunchName), cardSet.get(basicEvadeName));    
   setupMap();
   setupBattle(currentNode.getEnemyCount());
   gameState = State.START;
@@ -496,7 +498,22 @@ void draw(){
   else if (gameState == State.DEAD){
 
     image(deadImage, 600,200, deadImage.width * globalTextureMultiplier, deadImage.height * globalTextureMultiplier);
+    
     player.drawDead();
+    if (deadFramesLeft >= 0){  
+      float opacity = 255 * (1-((float)deadFramesLeft / deadFadeFrames));
+      fill(0,0,0,opacity);
+      rect(0,0,width,height);
+      
+    }
+    else if (deadFramesLeft >= -deadFadeFrames){
+      fill(0);
+      rect(0,0,width,height);
+    } 
+    else{
+      setupGame();
+    }
+    deadFramesLeft--;
   }
 }
 

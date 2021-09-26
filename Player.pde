@@ -22,6 +22,13 @@ private PImage deadImage;
      this.deck = new ArrayList<Card>();
  }
  
+public void setup(){
+  this.energy = maxEnergy;
+  this.maxEnergy = maxEnergy;
+  this.health = maxHealth;
+  this.deck = new ArrayList<Card>();
+}
+
  public void setSittingSheet(AnimatedSpriteSheet s){
    this.sittingSheet = s;
  }
