@@ -7,7 +7,7 @@ public class Player extends Entity{
  
  private AnimatedSpriteSheet sittingSheet;
   
-  
+private PImage deadImage;
  
  
  
@@ -34,6 +34,14 @@ public class Player extends Entity{
    }
  }
  
+public void setDeadImage(PImage p){
+this.deadImage = p;
+}
+
+public void drawDead(){
+  image(deadImage, x, y, deadImage.width * textureMult, deadImage.height * textureMult);
+}
+
  public void constructBasicDeck(Card basicAttack, Card basicEvade){
    for (int i = 0; i < 5; i++){
     this.deck.add(new Card(basicAttack));

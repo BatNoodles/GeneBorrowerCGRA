@@ -1,11 +1,12 @@
-//TODO Fix the constructors for the entities as the images are way out of order lol. holy shit it is dumb :)
+//TODO implement dying, which should just display "you died" for a couple of seconds while fading to black, then go back to the title screen.
 
 public enum State{
 START,
 BATTLE,
 REWARD,
 MAP,
-REST
+REST,
+DEAD
 }
 
 public enum Turn{
@@ -67,6 +68,7 @@ void setup(){
   player = new Player(100, 3, playerSpriteName, globalTextureMultiplier, dropShadow, strengthImage, speedImage, blockImage, 100, 200); //creates the player
   player.constructBasicDeck(cardSet.get(basicPunchName), cardSet.get(basicEvadeName));  
   player.setSittingSheet(new AnimatedSpriteSheet(loadImage(playerSittingName), 48, globalTextureMultiplier, ANIMATION_FRAMES));
+  player.setDeadImage(loadImage(deadPlayerName));
   player.setIdle(new AnimatedSpriteSheet(loadImage(playerIdle), 32, globalTextureMultiplier, ANIMATION_FRAMES));
 
   
@@ -101,11 +103,14 @@ void setup(){
   startButtons.add(new ButtonWithText(cardRewardButtonImage, 750, 400, globalTextureMultiplier, "startGame", "Start"));
   startButtons.add(new ButtonWithText(cardRewardButtonImage, 750, 500, globalTextureMultiplier, "quitGame", "Quit"));
 
+  deadImage = loadImage(deadImageName);
+
   setupGame();
   
 }
 
 void setupGame(){ //sorta resets the game
+  deadFramesLeft = deadFadeFrames;
   hand = new ArrayList<Card>();
   discard = new ArrayList<Card>();
   setupMap();
@@ -155,7 +160,7 @@ MapNode recursiveMapNode(int depth, int doubleCount,  int maxWidth, float double
 void setupBattle(int enemyCount){
    //code that is used to reset the battle
    player.refreshEnergy();
-   player.clear();
+   player.clear(); 
   damageNumbers = new ArrayList<FadingText>();
   mouseMode = "card";
   actionQueue = new ArrayList<EnemyAction>();
@@ -233,6 +238,8 @@ final String speedName = "sprites/speedIcon.png";
 final String playerSittingName = "spritesheets/playerSitting.png";
 final String titleName = "sprites/title.png";
 final String playerIdle = "spritesheets/playerIdle.png";
+final String deadImageName = "sprites/deathText.png";
+final String deadPlayerName = "sprites/deadPlayerSprite.png";
 
 PImage undergroundTile;
 PImage dropShadow;
@@ -249,7 +256,7 @@ PImage mapTile;
 PImage strengthImage;
 PImage speedImage;
 PImage title;
-
+PImage deadImage;
 
 final int ANIMATION_FRAMES = 75;
 
@@ -339,6 +346,10 @@ final float sameEnemyChance = 0.65;
 
 int drawAnimationTime;
 
+final int deadFadeFrames = 300;
+int deadFramesLeft;
+
+
 /***
 GAME STATES:
 battle : in a battle, can play cards, click next turn. Turns rotate between player and enemy
@@ -422,6 +433,9 @@ void draw(){
     if (turnState == Turn.ENEMY){
      handleEnemyTurn(); 
     }
+    if (player.getHealth() <= 0){
+      gameState = State.DEAD;
+    }
   }
   else if (gameState == State.REWARD){
     handleMouse();
@@ -478,6 +492,11 @@ void draw(){
     for (ButtonWithText b : startButtons){
       b.draw();
     }
+  }
+  else if (gameState == State.DEAD){
+
+    image(deadImage, 600,200, deadImage.width * globalTextureMultiplier, deadImage.height * globalTextureMultiplier);
+    player.drawDead();
   }
 }
 
