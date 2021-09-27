@@ -1,4 +1,4 @@
-//TODO implement dying, which should just display "you died" for a couple of seconds while fading to black, then go back to the title screen.
+//TODO add either a final boss or a "you win" screen after beating the final encounter
 
 public enum State{
 START,
@@ -514,6 +514,14 @@ void draw(){
       setupGame();
     }
     deadFramesLeft--;
+  }
+}
+
+
+void keyPressed(){
+  if (key == ESC){
+    key = 0;
+    setupGame();
   }
 }
 
