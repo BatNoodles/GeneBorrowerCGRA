@@ -538,7 +538,9 @@ void draw(){
     image(winImage, 600,200, winImage.width * globalTextureMultiplier, winImage.height * globalTextureMultiplier);
     textSize(75);
     text("Your score: " + score, 600, 400, winImage.width * globalTextureMultiplier, 200);
+    handleMouse();
     winContinueButton.draw();
+
   }
 }
 
@@ -801,8 +803,11 @@ void doButtonActions(Button b){
   case "quitGame":
     exit();
     break;
-
-  }
+  
+  case "winContinue":
+    setupGame();
+    break;
+    }
 }
 
 void handleButtons(){
@@ -820,6 +825,9 @@ void handleButtons(){
    }
    if (gameState == State.START){
      allButtons.addAll(startButtons);
+   }
+   if (gameState == State.WIN){
+     allButtons.add(winContinueButton);
    }
    for (Button button : allButtons){
     if (button.checkInside(mouseX, mouseY)){
