@@ -6,7 +6,8 @@ BATTLE,
 REWARD,
 MAP,
 REST,
-DEAD
+DEAD,
+WIN
 }
 
 public enum Turn{
@@ -94,7 +95,7 @@ void setup(){
  
   //TODO but not for a long time: add sprite sheets and animations (easier said than done)
   
-  restContinueButton = new ButtonWithText(cardRewardButtonImage, 750, 600, globalTextureMultiplier, "restContinue", "Continue", ""); //TODO make actualy spritesheet for continue button lol
+  restContinueButton = new ButtonWithText(cardRewardButtonImage, 750, 600, globalTextureMultiplier, "restContinue", "Continue", "");
   mapTile = loadImage(mapTileName);
   finishedNode = loadImage("sprites/finishedNode.png");
   campfireImage = new AnimatedSpriteSheet(loadImage(campfireImageName), 32, globalTextureMultiplier, ANIMATION_FRAMES);
@@ -103,13 +104,18 @@ void setup(){
   startButtons.add(new ButtonWithText(cardRewardButtonImage, 750, 400, globalTextureMultiplier, "startGame", "Start"));
   startButtons.add(new ButtonWithText(cardRewardButtonImage, 750, 500, globalTextureMultiplier, "quitGame", "Quit"));
 
+  winContinueButton = new ButtonWithText(cardRewardButtonImage, 750, 600, globalTextureMultiplier, "winContinue", "Continue", "");
+
   deadImage = loadImage(deadImageName);
+
+  winImage = loadImage(winImageName);
 
   setupGame();
   
 }
 
 void setupGame(){ //sorta resets the game
+  score = 0;
   deadFramesLeft = deadFadeFrames;
   hand = new ArrayList<Card>();
   discard = new ArrayList<Card>();
@@ -136,10 +142,10 @@ void setupMap(){
 MapNode recursiveMapNode(int depth, int doubleCount,  int maxWidth, float doublePathChance, int enemyIncreaseAmount, int x, int y, int maxDepth, float restChance, PImage restNodeImage){
   MapNode node;
   if(random(1) < restChance && (depth == 2 || depth == 4)){
-    node = new MapNode(restNodeImage, x, y, globalTextureMultiplier, "mapNode", 0, true);
+    node = new MapNode(restNodeImage, x, y, globalTextureMultiplier, "mapNode", 0, true, false);
   }
   else{
-    node = new MapNode(battleNodeImage, x, y, globalTextureMultiplier, "mapNode", floor(depth / enemyIncreaseAmount) + int(random(2)) + 1, false);
+    node = new MapNode(battleNodeImage, x, y, globalTextureMultiplier, "mapNode", floor(depth / enemyIncreaseAmount) + int(random(2)) + 1, false, depth == maxDepth - 1);
   }
   depth++;
   if (depth < maxDepth){
@@ -242,6 +248,7 @@ final String titleName = "sprites/title.png";
 final String playerIdle = "spritesheets/playerIdle.png";
 final String deadImageName = "sprites/deathText.png";
 final String deadPlayerName = "sprites/deadPlayerSprite.png";
+final String winImageName = "sprites/winText.png";
 
 PImage undergroundTile;
 PImage dropShadow;
@@ -259,6 +266,7 @@ PImage strengthImage;
 PImage speedImage;
 PImage title;
 PImage deadImage;
+PImage winImage;
 
 final int ANIMATION_FRAMES = 75;
 
@@ -343,7 +351,7 @@ int healFramesLeft = 0;
 ButtonWithText restContinueButton;
 boolean showRestContinue = false;
 
-
+ButtonWithText winContinueButton;
 final float sameEnemyChance = 0.65;
 
 int drawAnimationTime;
@@ -351,6 +359,8 @@ int drawAnimationTime;
 final int deadFadeFrames = 300;
 int deadFramesLeft;
 
+
+int score;
 
 /***
 GAME STATES:
@@ -378,8 +388,15 @@ void draw(){
   image(backgroundAdditionalImage,0,0,backgroundWidth,backgroundHeight);
   if (gameState == State.BATTLE){
     if (enemies.size() == 0){
-     gameState = State.REWARD;
-     player.clear();
+      if (currentNode.isFinal()){
+        score -= (player.getMaxHealth() - player.getHealth()) * 10;
+        gameState = State.WIN;
+      }
+      else{
+        gameState = State.REWARD;
+        player.clear();
+      }
+     
     }
     
     
@@ -390,6 +407,7 @@ void draw(){
     int x, y;
     for (int i = enemies.size()-1; i >= 0; i--){
      if (enemies.get(i).getHealth() <= 0){
+      score += enemies.get(i).getMaxHealth();
       enemies.remove(i) ;
      }
     }
@@ -514,6 +532,13 @@ void draw(){
       setupGame();
     }
     deadFramesLeft--;
+  }
+  else if (gameState == State.WIN){
+    player.drawSitting(false);
+    image(winImage, 600,200, winImage.width * globalTextureMultiplier, winImage.height * globalTextureMultiplier);
+    textSize(75);
+    text("Your score: " + score, 600, 400, winImage.width * globalTextureMultiplier, 200);
+    winContinueButton.draw();
   }
 }
 

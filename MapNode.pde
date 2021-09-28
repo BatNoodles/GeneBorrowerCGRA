@@ -3,12 +3,18 @@ class MapNode extends Button{
     private ArrayList<MapNode> childNodes;
     private boolean visited;
     private boolean isRestNode;
-    public MapNode(PImage spritesheet, int x, int y, int textureMult, String name, int enemyCount, boolean restNode){
+    private boolean isFinal; //might be temporary
+    public MapNode(PImage spritesheet, int x, int y, int textureMult, String name, int enemyCount, boolean restNode, boolean isFinal){
         super(spritesheet, x, y, textureMult, name);
         this.enemyCount = enemyCount;
+        this.isFinal = isFinal;
         this.visited = false;
         this.childNodes = new ArrayList<MapNode>();
         this.isRestNode = restNode;
+    }
+
+    public boolean isFinal(){
+        return this.isFinal;
     }
 
     public void addChild(MapNode node){

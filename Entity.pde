@@ -48,6 +48,10 @@ abstract class Entity{
  }
   
 
+  public int getMaxHealth(){
+    return this.maxHealth;
+  }
+
   public void setIdle(AnimatedSpriteSheet idle){
     this.idleAnimation = idle;
   }
