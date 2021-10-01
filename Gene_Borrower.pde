@@ -377,7 +377,7 @@ rest : player is at rest spot, heal
 
 ***/
 
-void draw(){
+void draw(){ //draws and updates all of the objects based on the game state
   background(255);
   for (int y = backgroundHeight - repeatingHeight; y < height; y+= repeatingHeight){ //draw repeating background
       for (int x = 0; x < width; x+= repeatingWidth){
@@ -545,7 +545,7 @@ void draw(){
 }
 
 
-void keyPressed(){
+void keyPressed(){//used for sending the player back to the main menu instead of closing the window when escape is paused
   if (key == ESC){
     key = 0;
     setupGame();
@@ -553,7 +553,7 @@ void keyPressed(){
 }
 
 
-void handleDrawAnimation(){
+void handleDrawAnimation(){ //handles animating cards being drawn at the end of the turn
   if (cardsToBeDrawn.size() == 0){
     drawAnimationTime = 0;
     turnState = Turn.ENEMY;
@@ -575,7 +575,7 @@ void handleDrawAnimation(){
 
 }
 
-void handleEnemyTurn(){
+void handleEnemyTurn(){ //handles the enemy turn by delaying the actions taken
   if (actionQueue.isEmpty()){
       if (enemyTurnFinalDelay == 0){
       turnState = Turn.PLAYER;
@@ -599,7 +599,7 @@ void handleEnemyTurn(){
   enemyTurnDelay--;
 }
 
-void discard(int amount){
+void discard(int amount){ //discards cards from the hand
   if (amount >= hand.size()){
     discard.addAll(hand);
     hand.clear();
@@ -611,7 +611,7 @@ void discard(int amount){
   }
 
 }
-void addDamageNumber(Entity target, int amount){
+void addDamageNumber(Entity target, int amount){ 
   addDamageNumber(target, Integer.toString(amount));
 }
 void addDamageNumber(Entity target, String text){
@@ -620,7 +620,7 @@ int x = (int)random(target.getX(), target.getX() + target.getWidth());
   damageNumbers.add(new FadingText(155, text,x,y));
 }
 
-void handleActions(Entity source, Entity target, ArrayList<Action> actions){
+void handleActions(Entity source, Entity target, ArrayList<Action> actions){ //handles the different actions a card or enemy can take during their turn
   for (Action action : actions){
       switch (action.getType()){
        case "a": // attack
@@ -653,7 +653,7 @@ void handleActions(Entity source, Entity target, ArrayList<Action> actions){
         discard(action.getAmount());
         
         break;
-      case "str":
+      case "str": //strengthen
         if (action.getTarget()){
           target.addStrength(action.getAmount());
         }
@@ -661,7 +661,7 @@ void handleActions(Entity source, Entity target, ArrayList<Action> actions){
           source.addStrength(action.getAmount());
         }
         break;
-      case "spd":
+      case "spd": //speed
         if (action.getTarget()){
           target.addSpeed(action.getAmount());
         }
@@ -673,7 +673,7 @@ void handleActions(Entity source, Entity target, ArrayList<Action> actions){
 }
 
 
-void playCard(){
+void playCard(){// handles playing a card, and if the card requires a target instead sets the mouse to targeting 
   if (selectedCard.getCost() > player.getEnergy()){
     selectedCard = null;
     return;
@@ -717,7 +717,7 @@ void drawToLimit(){ //draws up to the hand limit
  }
 }
 
-void setupHand(){
+void setupHand(){ //used at the start of a battle
    while (hand.size() < drawLimit){
    if (deck.size() == 0){
      deck.addAll(discard);
@@ -727,7 +727,7 @@ void setupHand(){
   hand.add(deck.remove(0)); 
  }
 }
-void setupEnemyActions(){
+void setupEnemyActions(){ //adds delays between the enemy actions
   enemyTurnDelay = 325;
   enemyTurnFinalDelay = 150;
   for (Enemy e : enemies){
@@ -749,7 +749,7 @@ void setupEnemyActions(){
   
 }
 
-void doButtonActions(Button b){
+void doButtonActions(Button b){ //handles button actions based on the internal name of the button
   String buttonName = b.getName();
   switch(buttonName){
    case "endTurn":
@@ -810,7 +810,7 @@ void doButtonActions(Button b){
     }
 }
 
-void handleButtons(){
+void handleButtons(){ //handles which buttons are clickable at any given time
   if (mousePressed && pressedButton == null && selectedCard == null){
    ArrayList<Button> allButtons = new ArrayList<Button>();
    allButtons.addAll(buttons.values());
@@ -848,7 +848,7 @@ void handleButtons(){
 }
 
 
-void handleMouseCard(){
+void handleMouseCard(){ //handles moving card with the mouse
   if (mousePressed){
   if (selectedCard == null){
     setSelectedCard();
@@ -871,7 +871,7 @@ void handleMouseCard(){
 }
 
 
-void handleMouseTarget(){
+void handleMouseTarget(){ //handles targeting with the mouse
   if (mousePressed){
   int x,y;
   for (int i = enemies.size()-1; i >= 0; i--){ //draw enemies
@@ -893,7 +893,7 @@ void handleMouseTarget(){
   }
 }
 
-void handleMouseRewards(){
+void handleMouseRewards(){ //handles showing the highlighted card after winning a battle
   for (ButtonWithText b : cardButtons){
     if (b.checkInside(mouseX, mouseY)){
       
